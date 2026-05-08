@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
 import { getHtmlPageNames } from "./html_pages.mjs";
@@ -21,6 +21,14 @@ export function browserProofPathForRoot(root) {
 
 export function browserRegistryPath() {
   return path.join(homedir(), "Library", "Application Support", "Codex", "browser-sidebar-local-servers.json");
+}
+
+function getJavaScriptMtimes(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) return getJavaScriptMtimes(entryPath);
+    return entry.isFile() && entry.name.endsWith(".js") ? [statSync(entryPath).mtimeMs] : [];
+  });
 }
 
 export function readCodexBrowserCard({ url }) {
@@ -110,7 +118,7 @@ export function validateCodexBrowserProof({ proof, proofPath, root, url }) {
   const generatedAtMs = Date.parse(proof.generatedAt ?? "");
   const latestRuntimeArtifactMtimeMs = Math.max(
     ...getHtmlPageNames(root).map((file) => statSync(path.join(root, file)).mtimeMs),
-    statSync(path.join(root, "src", "main.js")).mtimeMs,
+    ...getJavaScriptMtimes(path.join(root, "src")),
     statSync(path.join(root, "manim", "quantum_scenes.py")).mtimeMs,
   );
   const proofFresh = Number.isFinite(generatedAtMs) && generatedAtMs >= latestRuntimeArtifactMtimeMs;

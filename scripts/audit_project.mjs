@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { isCodexBrowserVerified, readCodexBrowserCard, readCodexBrowserProof } from "./browser_gate_helpers.mjs";
@@ -7,7 +7,7 @@ import { combineHtml, readHtmlPages } from "./html_pages.mjs";
 
 const root = process.cwd();
 const outDir = path.join(root, "output", "playwright");
-const jsPath = path.join(root, "src", "main.js");
+const srcPath = path.join(root, "src");
 const manimPath = path.join(root, "manim", "quantum_scenes.py");
 const syllabusPath = path.join(root, "SYLLABUS_MAP.md");
 const studyPathPath = path.join(root, "STUDY_PATH.md");
@@ -17,7 +17,17 @@ const requireCodexBrowser = process.env.REQUIRE_CODEX_BROWSER === "1";
 
 const htmlPages = readHtmlPages(root);
 const html = combineHtml(htmlPages);
-const js = readFileSync(jsPath, "utf8");
+function readJavaScriptTree(dir) {
+  return readdirSync(dir, { withFileTypes: true })
+    .flatMap((entry) => {
+      const entryPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) return readJavaScriptTree(entryPath);
+      return entry.isFile() && entry.name.endsWith(".js") ? [readFileSync(entryPath, "utf8")] : [];
+    })
+    .join("\n");
+}
+
+const js = readJavaScriptTree(srcPath);
 const manim = readFileSync(manimPath, "utf8");
 const syllabus = readFileSync(syllabusPath, "utf8");
 const studyPath = readFileSync(studyPathPath, "utf8");
@@ -171,7 +181,7 @@ const goalGate = {
   blockers: [
     ...(!server.ok ? ["Local server did not return a successful response."] : []),
     ...(missingMedia.length > 0 ? ["Some referenced Manim media files are missing."] : []),
-    ...(canvasesMissingJs.length > 0 ? ["Some HTML canvases are not covered by src/main.js."] : []),
+    ...(canvasesMissingJs.length > 0 ? ["Some HTML canvases are not covered by the src JavaScript modules."] : []),
     ...(!math.ok ? ["MathJax configuration or formula-count requirement is not satisfied."] : []),
     ...(!ffprobe.ok ? ["One or more rendered Manim MP4s failed ffprobe validation."] : []),
     ...(!documentIntegrity.ok ? ["Document integrity checks failed for IDs, hash links, canvas labels, or video cards."] : []),
