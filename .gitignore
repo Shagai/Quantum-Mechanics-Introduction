@@ -34,9 +34,10 @@ __pycache__/
 .ruff_cache/
 
 # Manim / generated media scratch output
-manim_output/
-media/
-videos/
+/manim_output/
+/media/
+/public/
+/videos/
 *.aux
 *.log
 *.out
@@ -44,6 +45,6 @@ videos/
 *.synctex.gz
 
 # Local automation, browser, and verification artifacts
-.cache/
-.playwright-cli/
-output/
+/.cache/
+/.playwright-cli/
+/output/

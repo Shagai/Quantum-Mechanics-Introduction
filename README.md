@@ -29,6 +29,22 @@ http://localhost:5173
 The page uses only static HTML, CSS, and JavaScript, so it can also be served by any simple static server.
 Mathematical notation is rendered with MathJax from a CDN.
 
+## Build and publish
+
+Generate the media and create the GitHub Pages artifact locally:
+
+```bash
+npm run render:manim
+npm run build
+```
+
+The build writes the static site to `dist/`.
+
+This project includes a GitHub Actions workflow at `.github/workflows/pages.yml`. After pushing to GitHub, enable
+GitHub Pages in the repository settings with source set to **GitHub Actions**. Pushes to `main` will then install
+ManimGL, render the media into the ignored `public/media/manim/` directory on the runner, verify the generated media,
+build `dist/`, and deploy it to GitHub Pages.
+
 ## Verify the project
 
 With the local server running, execute:
@@ -62,6 +78,12 @@ To run the document integrity subset directly:
 
 ```bash
 npm run audit:document
+```
+
+To verify that generated media files and video durations are present:
+
+```bash
+npm run audit:media
 ```
 
 To run the fallback Playwright visual smoke check outside the Codex in-app Browser gate:
@@ -142,6 +164,8 @@ Rendered clips are copied into:
 public/media/manim/
 ```
 
+That directory is generated output and is ignored by Git. GitHub Actions regenerates it before deploying GitHub Pages.
+
 The webpage detects those files automatically. Until they exist, it shows the live browser-native animation for each concept.
 
 ## Files
@@ -149,12 +173,14 @@ The webpage detects those files automatically. Until they exist, it shows the li
 - `index.html`: article structure
 - `styles.css`: Distill-inspired typography and layout
 - `src/main.js`: interactive simulations and animation loops
+- `scripts/build_site.mjs`: static GitHub Pages build helper
 - `manim/quantum_scenes.py`: ManimGL scenes
 - `scripts/render_manim.sh`: render helper for ManimGL
 - `scripts/audit_project.mjs`: static/server/media audit helper
 - `scripts/browser_gate_helpers.mjs`: shared Codex Browser card/proof validation helper
 - `scripts/codex_browser_proof_runtime.mjs`: Codex Browser runtime proof writer for direct-navigation verification
 - `scripts/fallback_visual_smoke.mjs`: fallback Playwright visual smoke helper
+- `scripts/verify_media_refs.mjs`: generated media reference and duration helper
 - `scripts/verify_document_integrity.mjs`: HTML ID/link/accessibility structure helper
 - `scripts/verify_syllabus_map.mjs`: syllabus-to-artifact consistency helper
 - `SYLLABUS_MAP.md`: Griffiths-style topic-to-artifact coverage map

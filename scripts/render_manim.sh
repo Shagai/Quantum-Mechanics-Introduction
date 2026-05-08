@@ -52,7 +52,11 @@ render_scene() {
   fi
 
   cp "$rendered" "$TARGET_DIR/$target"
-  echo "Wrote $TARGET_DIR/$target"
+
+  local poster="${target%.mp4}.jpg"
+  ffmpeg -y -loglevel error -i "$TARGET_DIR/$target" -frames:v 1 -q:v 3 "$TARGET_DIR/$poster"
+
+  echo "Wrote $TARGET_DIR/$target and $TARGET_DIR/$poster"
 }
 
 render_scene "WavePacketScene" "wave_packet.mp4"

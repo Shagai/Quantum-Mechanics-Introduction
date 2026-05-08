@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "python3 -m http.server 5173",
+    "build": "node scripts/build_site.mjs",
     "render:manim": "bash scripts/render_manim.sh",
     "audit": "node scripts/audit_project.mjs",
     "audit:document": "node scripts/verify_document_integrity.mjs",
+    "audit:media": "node scripts/verify_media_refs.mjs",
     "audit:goal": "REQUIRE_CODEX_BROWSER=1 node scripts/audit_project.mjs",
     "audit:local": "npm run audit && npm run audit:visual",
     "audit:syllabus": "node scripts/verify_syllabus_map.mjs",
