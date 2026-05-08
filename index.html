@@ -1,0 +1,3024 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quantum Physics, From Amplitudes to Measurement</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M12 34c10-16 30-16 40 0' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        chtml: {
+          scale: 0.98
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Quantum Physics introduction home">Quantum Primer</a>
+      <nav class="top-nav" aria-label="Sections">
+        <a href="#amplitudes">Amplitudes</a>
+        <a href="#course-map">Course</a>
+        <a href="#postulates">Postulates</a>
+        <a href="#systems">Systems</a>
+        <a href="#oscillator">Oscillator</a>
+        <a href="#hydrogen">Hydrogen</a>
+        <a href="#spin">Spin</a>
+        <a href="#identical-particles">Particles</a>
+        <a href="#methods">Methods</a>
+        <a href="#scattering">Scattering</a>
+        <a href="#transitions">Transitions</a>
+        <a href="#chapter-guide">Guide</a>
+        <a href="#study-path">Study</a>
+        <a href="#problems">Problems</a>
+        <a href="#interference">Interference</a>
+        <a href="#manim">Manim</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">An interactive first pass</p>
+          <h1>Quantum physics starts when probability gets a phase.</h1>
+          <p class="lede">
+            Classical probability tells us how often outcomes happen. Quantum mechanics adds a hidden bookkeeping
+            layer: amplitudes can point in different directions before becoming probabilities.
+          </p>
+        </div>
+        <figure class="hero-figure" aria-label="Animated probability amplitude wave">
+          <canvas id="hero-wave" width="980" height="520" role="img" aria-label="Animated probability amplitude wave"></canvas>
+          <figcaption>
+            A moving complex amplitude. The height suggests probability density; the color and rotating markers
+            suggest phase.
+          </figcaption>
+        </figure>
+      </section>
+
+      <article class="article-shell">
+        <aside class="toc" aria-label="Article outline">
+          <a href="#amplitudes">1. Amplitudes</a>
+          <a href="#interference">2. Interference</a>
+          <a href="#qubit">3. A qubit</a>
+          <a href="#measurement">4. Measurement</a>
+          <a href="#uncertainty">5. Uncertainty</a>
+          <a href="#course-map">6. Course map</a>
+          <a href="#postulates">7. Postulates</a>
+          <a href="#systems">8. Systems</a>
+          <a href="#oscillator">9. Oscillator</a>
+          <a href="#hydrogen">10. Hydrogen</a>
+          <a href="#spin">11. Spin</a>
+          <a href="#identical-particles">12. Identical particles</a>
+          <a href="#methods">13. Methods</a>
+          <a href="#scattering">14. Scattering</a>
+          <a href="#transitions">15. Transitions</a>
+          <a href="#chapter-guide">16. Chapter guide</a>
+          <a href="#study-path">17. Study path</a>
+          <a href="#problems">18. Problems</a>
+          <a href="#manim">19. Manim clips</a>
+        </aside>
+
+        <div class="article-flow">
+          <section id="amplitudes" class="section-block">
+            <p class="kicker">1. The state</p>
+            <h2>Quantum states are not ordinary probability lists.</h2>
+            <p>
+              A quantum state stores amplitudes. An amplitude has a size and a phase. When a measurement is made,
+              the size becomes an ordinary probability through the Born rule:
+              <span class="equation">\(P(\text{outcome})=|\text{amplitude}|^2\)</span>.
+            </p>
+            <p>
+              The phase is invisible if there is only one path. It matters when two or more paths can meet. Then
+              amplitudes add before we square them, so phases can strengthen or cancel each other.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 1</span>
+                <h3>A wavefunction as moving amplitude</h3>
+                <p>
+                  Narrowing the packet makes the particle feel more localized. The cost is less certainty about
+                  its momentum, which appears later in the uncertainty section.
+                </p>
+              </div>
+              <canvas id="packet-canvas" width="900" height="420" role="img" aria-label="Animated wave packet"></canvas>
+              <div class="controls">
+                <label>
+                  Packet width
+                  <input id="packet-width" type="range" min="18" max="92" value="54" />
+                </label>
+                <output id="packet-width-value" for="packet-width">54</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 2</span>
+                <h3>Position space and momentum space are Fourier partners</h3>
+                <p>
+                  A localized Gaussian packet can be described either by \(\psi(x)\) or by its momentum-space
+                  amplitude \(\phi(p)\). Narrowing the packet in \(x\) broadens the possible momenta, while the
+                  carrier wave sets the average momentum.
+                </p>
+              </div>
+              <canvas id="momentum-canvas" width="900" height="540" role="img" aria-label="Position-space wavefunction and momentum-space Fourier transform"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Position spread sigma x
+                  <input id="momentum-sigma" type="range" min="20" max="120" value="62" />
+                </label>
+                <label>
+                  Mean wave number k0
+                  <input id="momentum-k0" type="range" min="-90" max="90" value="36" />
+                </label>
+                <output id="momentum-readout" for="momentum-sigma momentum-k0">Momentum-space readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \phi(p)=\frac{1}{\sqrt{2\pi\hbar}}\int_{-\infty}^{\infty}\psi(x)e^{-ipx/\hbar}\,dx,
+                \qquad
+                \psi(x)=\frac{1}{\sqrt{2\pi\hbar}}\int_{-\infty}^{\infty}\phi(p)e^{ipx/\hbar}\,dp.
+              \]
+              \[
+                P(x)\,dx=|\psi(x)|^2dx,\qquad P(p)\,dp=|\phi(p)|^2dp,\qquad
+                \langle p\rangle=\int \phi^*(p)p\phi(p)\,dp.
+              \]
+              <p>
+                The uncertainty relation is a Fourier fact with physical consequences: a narrow packet needs
+                many momentum components, while a nearly single-momentum state must spread across space.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 3</span>
+                <h3>Momentum is the generator of translations</h3>
+                <p>
+                  In position space, the momentum operator differentiates the wavefunction. Exponentiating it
+                  creates a translation operator: shifting the packet by \(a\) is the same operation as applying
+                  \(e^{-ia\hat p/\hbar}\).
+                </p>
+              </div>
+              <canvas id="translation-canvas" width="900" height="560" role="img" aria-label="Momentum operator as generator of spatial translations"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Translation a
+                  <input id="translation-shift" type="range" min="-120" max="120" value="46" />
+                </label>
+                <label>
+                  Wave number k
+                  <input id="translation-k" type="range" min="-90" max="90" value="44" />
+                </label>
+                <label>
+                  Packet width
+                  <input id="translation-width" type="range" min="35" max="120" value="70" />
+                </label>
+                <output id="translation-readout" for="translation-shift translation-k translation-width">Translation generator readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat p=-i\hbar\frac{\partial}{\partial x},\qquad
+                \hat T(a)=e^{-ia\hat p/\hbar},\qquad
+                (\hat T(a)\psi)(x)=\psi(x-a).
+              \]
+              \[
+                [\hat x,\hat p]\psi
+                =\hat x(-i\hbar\partial_x\psi)
+                +i\hbar\partial_x(x\psi)
+                =i\hbar\psi.
+              \]
+              <p>
+                This is why the canonical commutator is not arbitrary notation: it encodes how positions change
+                under infinitesimal translations.
+              </p>
+            </div>
+          </section>
+
+          <section id="interference" class="section-block">
+            <p class="kicker">2. The experiment</p>
+            <h2>The double slit is phase bookkeeping made visible.</h2>
+            <p>
+              If a particle can reach a detector through two indistinguishable paths, the amplitudes from both
+              paths are added first. Where phases line up, detection is likely. Where they oppose, detection is
+              unlikely.
+            </p>
+            <p>
+              This is why the pattern is not the sum of two classical shadows. It is a probability distribution
+              created by amplitude addition.
+            </p>
+
+            <figure class="interactive-panel">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 4</span>
+                <h3>Two paths, one screen</h3>
+                <p>
+                  The bright bands are places where both paths arrive nearly in phase. Larger slit spacing makes
+                  the pattern tighter.
+                </p>
+              </div>
+              <canvas id="slit-canvas" width="900" height="520" role="img" aria-label="Double slit interference"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Wavelength
+                  <input id="wavelength" type="range" min="34" max="92" value="58" />
+                </label>
+                <label>
+                  Slit spacing
+                  <input id="slit-spacing" type="range" min="34" max="124" value="74" />
+                </label>
+              </div>
+            </figure>
+
+          </section>
+
+          <section id="qubit" class="section-block">
+            <p class="kicker">3. The smallest example</p>
+            <h2>A qubit is a point of direction, not a coin waiting to land.</h2>
+            <p>
+              A classical bit is either 0 or 1. A qubit can be in a superposition
+              <span class="equation">\(|\psi\rangle=\cos(\theta/2)|0\rangle+e^{i\phi}\sin(\theta/2)|1\rangle\)</span>.
+              The angle theta controls the measurement probabilities in the 0 and 1 basis. The angle phi is a
+              relative phase that becomes visible in other measurement bases.
+            </p>
+
+            <figure class="interactive-panel split-panel">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 5</span>
+                <h3>The Bloch sphere view</h3>
+                <p>
+                  The north pole is |0&gt;, the south pole is |1&gt;, and points between them are coherent
+                  superpositions.
+                </p>
+              </div>
+              <canvas id="bloch-canvas" width="640" height="520" role="img" aria-label="Bloch sphere qubit visualization"></canvas>
+              <div class="controls stacked">
+                <label>
+                  theta
+                  <input id="theta" type="range" min="0" max="180" value="68" />
+                </label>
+                <label>
+                  phi
+                  <input id="phi" type="range" min="0" max="360" value="36" />
+                </label>
+                <output id="state-readout" aria-live="polite">state readout</output>
+              </div>
+            </figure>
+          </section>
+
+          <section id="measurement" class="section-block">
+            <p class="kicker">4. The update</p>
+            <h2>Measurement turns amplitude into sampled fact.</h2>
+            <p>
+              Quantum mechanics predicts probabilities for outcomes, not a hidden list of prewritten answers.
+              Repeating the same preparation many times reveals the probability distribution.
+            </p>
+
+            <figure class="interactive-panel split-panel">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 6</span>
+                <h3>Repeated measurements</h3>
+                <p>
+                  Each dot is one preparation and one measurement. The bars approach the Born-rule probabilities
+                  as the number of trials grows.
+                </p>
+              </div>
+              <canvas id="measurement-canvas" width="680" height="460" role="img" aria-label="Measurement histogram simulation"></canvas>
+              <div class="controls stacked">
+                <label>
+                  P(0)
+                  <input id="prob-zero" type="range" min="5" max="95" value="72" />
+                </label>
+                <div class="button-row">
+                  <button id="one-shot" type="button">One shot</button>
+                  <button id="many-shots" type="button">Run 64</button>
+                  <button id="reset-shots" type="button" class="secondary">Reset</button>
+                </div>
+                <output id="shot-readout" aria-live="polite">0 trials</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 7</span>
+                <h3>Projection operators describe measurement update</h3>
+                <p>
+                  A measurement with a degenerate outcome does not have to choose a single basis vector. It
+                  projects the state onto the whole eigenspace for that outcome, then renormalizes what remains.
+                </p>
+              </div>
+              <canvas id="projection-canvas" width="900" height="560" role="img" aria-label="Projection operator measurement update with a degenerate eigenspace"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Probability of degenerate outcome
+                  <input id="projection-weight" type="range" min="5" max="95" value="68" />
+                </label>
+                <label>
+                  Mix inside eigenspace
+                  <input id="projection-mix" type="range" min="0" max="100" value="58" />
+                </label>
+                <label>
+                  Relative phase
+                  <input id="projection-phase" type="range" min="-180" max="180" value="42" />
+                </label>
+                <output id="projection-readout" for="projection-weight projection-mix projection-phase">Projection measurement readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat P_a=\sum_{\mu}|a,\mu\rangle\langle a,\mu|,\qquad
+                p(a)=\langle\psi|\hat P_a|\psi\rangle.
+              \]
+              \[
+                |\psi\rangle\longrightarrow
+                \frac{\hat P_a|\psi\rangle}{\sqrt{\langle\psi|\hat P_a|\psi\rangle}},
+                \qquad
+                \hat P_a\hat P_b=\delta_{ab}\hat P_a,\quad \sum_a\hat P_a=I.
+              \]
+              <p>
+                The probability is the length squared of the projected component. For a degenerate eigenspace,
+                the relative amplitudes inside that subspace survive the measurement.
+              </p>
+            </div>
+          </section>
+
+          <section id="uncertainty" class="section-block">
+            <p class="kicker">5. The constraint</p>
+            <h2>Uncertainty is a limit on jointly sharp descriptions.</h2>
+            <p>
+              A localized wave packet is built from many momentum components. A broad packet can be made from a
+              narrower range of momenta. That tradeoff is the content of the uncertainty principle:
+              <span class="equation">\( \Delta x\,\Delta p \ge \hbar/2 \)</span>.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 8</span>
+                <h3>Position width versus momentum width</h3>
+                <p>
+                  The top plot is position space. The bottom plot is momentum space. Making one curve narrow
+                  makes the other curve broad.
+                </p>
+              </div>
+              <canvas id="uncertainty-canvas" width="900" height="500" role="img" aria-label="Uncertainty principle wave packet"></canvas>
+              <div class="controls">
+                <label>
+                  Position spread
+                  <input id="spread" type="range" min="20" max="120" value="62" />
+                </label>
+                <output id="uncertainty-readout" for="spread">Delta x Delta p is constrained</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 9</span>
+                <h3>Robertson uncertainty is the commutator theorem</h3>
+                <p>
+                  Fourier uncertainty is one example. In general, two observables cannot both be sharp in a
+                  state when their commutator has a nonzero expectation value. Rotate the second spin observable
+                  and change the state phase to see the lower bound move.
+                </p>
+              </div>
+              <canvas id="robertson-canvas" width="900" height="560" role="img" aria-label="Robertson uncertainty relation for two spin observables"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Observable angle alpha
+                  <input id="robertson-angle" type="range" min="0" max="180" value="72" />
+                </label>
+                <label>
+                  State polar theta
+                  <input id="robertson-theta" type="range" min="0" max="180" value="68" />
+                </label>
+                <label>
+                  State phase phi
+                  <input id="robertson-phi" type="range" min="-180" max="180" value="74" />
+                </label>
+                <output id="robertson-readout" for="robertson-angle robertson-theta robertson-phi">Robertson uncertainty readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \Delta A=\sqrt{\langle A^2\rangle-\langle A\rangle^2},\qquad
+                \Delta B=\sqrt{\langle B^2\rangle-\langle B\rangle^2}.
+              \]
+              \[
+                \Delta A\,\Delta B\geq \frac{1}{2}\left|\langle[\hat A,\hat B]\rangle\right|.
+              \]
+              \[
+                A=\sigma_z,\qquad B(\alpha)=\cos\alpha\,\sigma_z+\sin\alpha\,\sigma_x,\qquad
+                \frac{1}{2}|\langle[A,B]\rangle|=|\sin\alpha\,\langle\sigma_y\rangle|.
+              \]
+              <p>
+                The inequality is a statement about a prepared state, not about bad instruments. It comes from
+                Cauchy-Schwarz applied to the vectors \((A-\langle A\rangle)|\psi\rangle\) and
+                \((B-\langle B\rangle)|\psi\rangle\).
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 10</span>
+                <h3>Probability current is local conservation</h3>
+                <p>
+                  Probability can move through space even though the total probability remains one. The current
+                  \(j(x,t)\) measures flow through a point; a region gains probability when more current enters
+                  than leaves.
+                </p>
+              </div>
+              <canvas id="current-canvas" width="900" height="540" role="img" aria-label="Probability current and continuity equation visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Phase gradient k
+                  <input id="current-k" type="range" min="-100" max="100" value="46" />
+                </label>
+                <label>
+                  Packet width
+                  <input id="current-width" type="range" min="28" max="115" value="58" />
+                </label>
+                <output id="current-readout" for="current-k current-width">Probability current readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \rho(x,t)=|\Psi(x,t)|^2,\qquad
+                j(x,t)=\frac{\hbar}{m}\operatorname{Im}\!\left(\Psi^*\frac{\partial\Psi}{\partial x}\right).
+              \]
+              \[
+                \frac{\partial\rho}{\partial t}+\frac{\partial j}{\partial x}=0,\qquad
+                \frac{d}{dt}\int_a^b \rho(x,t)\,dx=j(a,t)-j(b,t).
+              \]
+              <p>
+                This is the local version of normalization. The Schrödinger equation does not merely preserve
+                total probability; it says where probability flows.
+              </p>
+            </div>
+          </section>
+
+          <section id="course-map" class="section-block">
+            <p class="kicker">6. The full route</p>
+            <h2>A serious first course needs a mathematical spine.</h2>
+            <p>
+              The rest of the project is organized like a book-length undergraduate quantum mechanics course,
+              but with original explanations and interactive checks. The aim is not only to recognize the words,
+              but to learn how the equations constrain physical predictions.
+            </p>
+            <p>
+              The central move is always the same: choose a state space, write the Hamiltonian, solve or approximate
+              the eigenvalue problem, and translate amplitudes into probabilities.
+            </p>
+
+            <div class="math-block">
+              \[
+                i\hbar\frac{\partial}{\partial t}\Psi(x,t)=\hat H\Psi(x,t)
+              \]
+              \[
+                \hat H = -\frac{\hbar^2}{2m}\nabla^2 + V(\mathbf r)
+              \]
+            </div>
+
+            <div class="curriculum-grid" aria-label="Quantum mechanics course map">
+              <section class="topic-card">
+                <span>01</span>
+                <h3>States and probability</h3>
+                <p>\(\Psi\), normalization, Born rule, expectation values, probability current.</p>
+              </section>
+              <section class="topic-card">
+                <span>02</span>
+                <h3>Schrodinger dynamics</h3>
+                <p>TDSE, TISE, stationary states, unitary evolution, boundary conditions.</p>
+              </section>
+              <section class="topic-card">
+                <span>03</span>
+                <h3>One-dimensional systems</h3>
+                <p>Infinite wells, finite wells, barriers, tunneling, bound and scattering states.</p>
+              </section>
+              <section class="topic-card">
+                <span>04</span>
+                <h3>Harmonic oscillator</h3>
+                <p>Ladder operators, zero-point energy, Hermite functions, coherent states.</p>
+              </section>
+              <section class="topic-card">
+                <span>05</span>
+                <h3>Formalism</h3>
+                <p>Hilbert spaces, bra-ket notation, Hermitian operators, commutators.</p>
+              </section>
+              <section class="topic-card">
+                <span>06</span>
+                <h3>Three dimensions</h3>
+                <p>Separation of variables, central potentials, hydrogen, degeneracy.</p>
+              </section>
+              <section class="topic-card">
+                <span>07</span>
+                <h3>Angular momentum and spin</h3>
+                <p>\(\hat L^2\), \(\hat L_z\), ladder operators, Pauli matrices, addition rules.</p>
+              </section>
+              <section class="topic-card">
+                <span>08</span>
+                <h3>Identical particles</h3>
+                <p>Exchange symmetry, bosons, fermions, Slater determinants, helium structure.</p>
+              </section>
+              <section class="topic-card">
+                <span>09</span>
+                <h3>Approximation methods</h3>
+                <p>Time-independent perturbation theory, variational principle, WKB.</p>
+              </section>
+              <section class="topic-card">
+                <span>10</span>
+                <h3>Scattering and transitions</h3>
+                <p>Born approximation, partial waves, Fermi golden rule, selection rules.</p>
+              </section>
+            </div>
+
+          </section>
+
+          <section id="postulates" class="section-block">
+            <p class="kicker">7. The postulates</p>
+            <h2>The rules are compact; the consequences are large.</h2>
+            <p>
+              A pure state is a normalized vector \(|\psi\rangle\) in a complex Hilbert space. Observables are
+              represented by Hermitian operators. If \(\hat A|a_n\rangle=a_n|a_n\rangle\), then measuring \(A\)
+              returns one of the eigenvalues \(a_n\), with probability \(|\langle a_n|\psi\rangle|^2\).
+            </p>
+            <p>
+              Time evolution is generated by the Hamiltonian. For a time-independent Hamiltonian, the formal
+              solution is unitary:
+              <span class="equation">\( |\psi(t)\rangle=e^{-i\hat Ht/\hbar}|\psi(0)\rangle \)</span>.
+            </p>
+
+            <div class="derivation-grid">
+              <section class="derivation-card">
+                <h3>Normalization</h3>
+                <p>
+                  Probability one means
+                  \[
+                    \int_{-\infty}^{\infty}|\Psi(x,t)|^2\,dx = 1.
+                  \]
+                  If \(\Psi\) is multiplied by a constant, normalization fixes the allowed constant.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Expectation values</h3>
+                <p>
+                  The average result over repeated preparations is
+                  \[
+                    \langle A\rangle = \langle\psi|\hat A|\psi\rangle.
+                  \]
+                  In position space, \(\langle x\rangle=\int x|\Psi(x,t)|^2dx\).
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Compatible measurements</h3>
+                <p>
+                  Operators commute when there is a common eigenbasis:
+                  \[
+                    [\hat A,\hat B]=0.
+                  \]
+                  Nonzero commutators are the algebraic source of uncertainty relations.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 11</span>
+                <h3>Hermitian observables decompose into eigenspace projectors</h3>
+                <p>
+                  The spectral theorem turns an observable into real eigenvalues and orthogonal projectors.
+                  Rotate a two-level observable, change its eigenvalue splitting, and compare the Born
+                  probabilities with the expectation value they predict.
+                </p>
+              </div>
+              <canvas id="spectral-theorem-canvas" width="900" height="560" role="img" aria-label="Spectral theorem, Hermitian observable, and Born probability visualization"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Observable axis
+                  <input id="spectral-theorem-axis" type="range" min="-180" max="180" value="58" />
+                </label>
+                <label>
+                  Eigenvalue gap
+                  <input id="spectral-theorem-gap" type="range" min="10" max="120" value="70" />
+                </label>
+                <label>
+                  State direction
+                  <input id="spectral-theorem-state" type="range" min="-180" max="180" value="-24" />
+                </label>
+                <output id="spectral-theorem-readout" for="spectral-theorem-axis spectral-theorem-gap spectral-theorem-state">Spectral theorem readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat A=\sum_n a_n P_n,\qquad P_n=|a_n\rangle\langle a_n|,\qquad
+                P_mP_n=\delta_{mn}P_n.
+              \]
+              \[
+                p(a_n)=\langle\psi|P_n|\psi\rangle=|\langle a_n|\psi\rangle|^2,\qquad
+                \langle A\rangle=\sum_n a_n p(a_n).
+              \]
+              <p>
+                Hermiticity is what makes measurement results real and makes the eigenvectors usable as an
+                orthonormal coordinate system for probabilities.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 12</span>
+                <h3>Changing basis changes coordinates, not the state</h3>
+                <p>
+                  A ket is the geometric object. Its component list depends on the basis used to describe it.
+                  Rotate the measurement basis and watch the same \(|\psi\rangle\) acquire new coefficients and
+                  new outcome probabilities.
+                </p>
+              </div>
+              <canvas id="basis-canvas" width="900" height="560" role="img" aria-label="Basis change and matrix representation visualization"></canvas>
+              <div class="controls three-up">
+                <label>
+                  State tilt theta
+                  <input id="basis-state" type="range" min="0" max="180" value="64" />
+                </label>
+                <label>
+                  Relative phase phi
+                  <input id="basis-phase" type="range" min="-180" max="180" value="34" />
+                </label>
+                <label>
+                  Basis rotation alpha
+                  <input id="basis-angle" type="range" min="-180" max="180" value="72" />
+                </label>
+                <output id="basis-readout" for="basis-state basis-phase basis-angle">Basis change readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |\psi\rangle=c_1|e_1\rangle+c_2|e_2\rangle,\qquad
+                c'_i=\langle e'_i|\psi\rangle,\qquad c'=U^\dagger c.
+              \]
+              \[
+                \hat A'=U^\dagger\hat A U,\qquad
+                \langle\psi|\hat A|\psi\rangle=c^\dagger A c=c'^\dagger A'c'.
+              \]
+              <p>
+                Matrix mechanics is bookkeeping for this invariance. The column vector and matrix entries change
+                with the chosen basis; probabilities and expectation values do not.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 13</span>
+                <h3>Completeness reconstructs the state from projections</h3>
+                <p>
+                  An orthonormal basis resolves the identity. Each coefficient is a projection
+                  \(c_n=\langle e_n|\psi\rangle\), and adding all projected pieces reconstructs the original ket.
+                  Rotating the basis changes the pieces, not the vector.
+                </p>
+              </div>
+              <canvas id="completeness-canvas" width="900" height="560" role="img" aria-label="Completeness relation and resolution of identity visualization"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Basis rotation
+                  <input id="completeness-angle" type="range" min="-90" max="90" value="34" />
+                </label>
+                <label>
+                  Second component
+                  <input id="completeness-c2" type="range" min="-100" max="100" value="58" />
+                </label>
+                <label>
+                  Third component
+                  <input id="completeness-c3" type="range" min="-100" max="100" value="-42" />
+                </label>
+                <output id="completeness-readout" for="completeness-angle completeness-c2 completeness-c3">Completeness readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                I=\sum_n |e_n\rangle\langle e_n|,\qquad
+                |\psi\rangle=I|\psi\rangle=\sum_n |e_n\rangle\langle e_n|\psi\rangle.
+              \]
+              \[
+                \sum_n |c_n|^2=1,\qquad
+                \langle A\rangle=\sum_{m,n}c_m^*A_{mn}c_n.
+              \]
+              <p>
+                Completeness is the bridge between abstract kets and concrete calculations. It lets us insert
+                a convenient basis anywhere, then compute amplitudes, probabilities, and matrix elements.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 14</span>
+                <h3>Commutators measure whether measurement order matters</h3>
+                <p>
+                  Compare two spin observables: \(A=\sigma_z\) and
+                  \(B(\alpha)=\cos\alpha\,\sigma_z+\sin\alpha\,\sigma_x\). When their axes are aligned,
+                  they share eigenvectors. When the axes differ, a measurement of one observable disturbs the
+                  statistics of the other, and the two possible measurement orders no longer agree.
+                </p>
+              </div>
+              <canvas id="commutator-canvas" width="900" height="560" role="img" aria-label="Commutator and compatible observables visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Observable angle alpha
+                  <input id="commutator-angle" type="range" min="0" max="180" value="62" />
+                </label>
+                <label>
+                  Initial state tilt beta
+                  <input id="commutator-state" type="range" min="-180" max="180" value="34" />
+                </label>
+                <output id="commutator-readout" for="commutator-angle commutator-state">Commutator readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                B(\alpha)=\cos\alpha\,\sigma_z+\sin\alpha\,\sigma_x,\qquad
+                [\sigma_z,B(\alpha)]=2i\sin\alpha\,\sigma_y.
+              \]
+              \[
+                [A,B]=0\quad\Longleftrightarrow\quad
+                \text{\(A\) and \(B\) can be diagonalized in the same orthonormal basis.}
+              \]
+              <p>
+                The commutator is not just notation. It decides which questions can have sharp answers in the
+                same prepared state and which sequential measurements must be treated as physically different
+                experiments.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 15</span>
+                <h3>Unitary time evolution rotates phases, not total probability</h3>
+                <p>
+                  In an energy eigenbasis, the Schrodinger equation gives each component a phase
+                  \(e^{-iE_nt/\hbar}\). The probabilities \(|c_n|^2\) stay fixed, but relative phases change
+                  interference terms and therefore observable expectations.
+                </p>
+              </div>
+              <canvas id="unitary-canvas" width="900" height="560" role="img" aria-label="Unitary time evolution and spectral phase visualization"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Energy spacing
+                  <input id="unitary-gap" type="range" min="25" max="120" value="72" />
+                </label>
+                <label>
+                  Second amplitude
+                  <input id="unitary-c2" type="range" min="-100" max="100" value="62" />
+                </label>
+                <label>
+                  Third amplitude
+                  <input id="unitary-c3" type="range" min="-100" max="100" value="-38" />
+                </label>
+                <output id="unitary-readout" for="unitary-gap unitary-c2 unitary-c3">Unitary time evolution readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |\psi(t)\rangle=U(t)|\psi(0)\rangle,\qquad
+                U(t)=e^{-i\hat Ht/\hbar},\qquad U^\dagger U=I.
+              \]
+              \[
+                |\psi(t)\rangle=\sum_n c_n e^{-iE_nt/\hbar}|E_n\rangle,\qquad
+                |c_n(t)|^2=|c_n(0)|^2.
+              \]
+              <p>
+                Energy measurements are stationary in a time-independent Hamiltonian, but any observable that
+                is not diagonal in the energy basis can oscillate because it compares components with different
+                phases.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 16</span>
+                <h3>Schrodinger and Heisenberg pictures keep the same predictions</h3>
+                <p>
+                  You can put the time dependence in the state or in the observable. In the Schrodinger picture
+                  the Bloch vector precesses while the operator is fixed. In the Heisenberg picture the state is
+                  fixed while the operator rotates backward, leaving \(\langle A\rangle\) unchanged.
+                </p>
+              </div>
+              <canvas id="heisenberg-canvas" width="900" height="560" role="img" aria-label="Schrodinger and Heisenberg picture equivalence visualization"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Hamiltonian gap
+                  <input id="heisenberg-gap" type="range" min="20" max="120" value="74" />
+                </label>
+                <label>
+                  State tilt
+                  <input id="heisenberg-state" type="range" min="10" max="170" value="62" />
+                </label>
+                <label>
+                  Observable angle
+                  <input id="heisenberg-observable" type="range" min="-180" max="180" value="38" />
+                </label>
+                <output id="heisenberg-readout" for="heisenberg-gap heisenberg-state heisenberg-observable">Picture equivalence readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |\psi_S(t)\rangle=U(t)|\psi(0)\rangle,\qquad
+                A_H(t)=U^\dagger(t)A_SU(t).
+              \]
+              \[
+                \langle\psi_S(t)|A_S|\psi_S(t)\rangle
+                =\langle\psi(0)|A_H(t)|\psi(0)\rangle.
+              \]
+              \[
+                \frac{dA_H}{dt}=\frac{i}{\hbar}[H,A_H]+\left(\frac{\partial A}{\partial t}\right)_H.
+              \]
+              <p>
+                These are not different physical theories. They are two coordinate choices for the same transition
+                amplitudes and expectation values.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 17</span>
+                <h3>Ehrenfest motion and conserved energy</h3>
+                <p>
+                  A stationary Hamiltonian conserves \(\langle H\rangle\), while the expectations
+                  \(\langle x\rangle\) and \(\langle p\rangle\) obey classical-looking equations. Change the
+                  curvature of a harmonic potential and the initial momentum of a wave packet center.
+                </p>
+              </div>
+              <canvas id="ehrenfest-canvas" width="900" height="520" role="img" aria-label="Ehrenfest theorem and conservation law visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Potential curvature omega
+                  <input id="ehrenfest-omega" type="range" min="0" max="100" value="52" />
+                </label>
+                <label>
+                  Initial momentum p0
+                  <input id="ehrenfest-momentum" type="range" min="-100" max="100" value="42" />
+                </label>
+                <output id="ehrenfest-readout" for="ehrenfest-omega ehrenfest-momentum">Ehrenfest readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \frac{d}{dt}\langle A\rangle
+                =\frac{i}{\hbar}\langle[\hat H,\hat A]\rangle
+                +\left\langle\frac{\partial \hat A}{\partial t}\right\rangle.
+              \]
+              \[
+                \frac{d}{dt}\langle x\rangle=\frac{\langle p\rangle}{m},\qquad
+                \frac{d}{dt}\langle p\rangle=-\left\langle\frac{dV}{dx}\right\rangle.
+              \]
+              \[
+                \frac{d}{dt}\langle H\rangle=0
+                \quad \text{when } \partial \hat H/\partial t=0.
+              \]
+              <p>
+                Conservation laws come from symmetries: if an observable commutes with \(\hat H\), its expectation
+                is constant in time.
+              </p>
+            </div>
+
+            <div class="chapter-callout">
+              <h3>Deep learning checkpoint</h3>
+              <p>
+                Do not memorize the postulates as prose. Practice translating each physical question into:
+                state, operator, basis, probability amplitude, and expectation value.
+              </p>
+            </div>
+          </section>
+
+          <section id="systems" class="section-block">
+            <p class="kicker">8. Solvable systems</p>
+            <h2>Exact solutions teach the grammar of spectra.</h2>
+            <p>
+              The time-independent Schrodinger equation is an eigenvalue problem:
+              <span class="equation">\( \hat H\psi_n = E_n\psi_n \)</span>. Bound states are normalizable
+              eigenfunctions. Their energy spectrum can be discrete, continuous, or mixed depending on the
+              potential and boundary conditions.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 18</span>
+                <h3>Orthogonal eigenfunctions make expansion coefficients measurable</h3>
+                <p>
+                  Hermitian Hamiltonians have orthogonal stationary states. Choose two square-well modes and
+                  watch the signed overlap integral cancel unless the mode numbers match. This is why
+                  \(c_n=\langle\psi_n|\Psi\rangle\) isolates one component of a state.
+                </p>
+              </div>
+              <canvas id="orthogonality-canvas" width="900" height="560" role="img" aria-label="Orthogonality of stationary-state eigenfunctions and overlap integrals"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Bra mode n
+                  <input id="orthogonality-n" type="range" min="1" max="6" value="2" />
+                </label>
+                <label>
+                  Ket mode m
+                  <input id="orthogonality-m" type="range" min="1" max="6" value="4" />
+                </label>
+                <label>
+                  Ket phase
+                  <input id="orthogonality-phase" type="range" min="-180" max="180" value="0" />
+                </label>
+                <output id="orthogonality-readout" for="orthogonality-n orthogonality-m orthogonality-phase">Orthogonality readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \int_0^a \psi_n^*(x)\psi_m(x)\,dx=\delta_{nm},\qquad
+                \Psi(x,t)=\sum_n c_n\psi_n(x)e^{-iE_nt/\hbar}.
+              \]
+              \[
+                c_n=\int_0^a \psi_n^*(x)\Psi(x,0)\,dx,\qquad
+                \sum_n |c_n|^2=1.
+              \]
+              <p>
+                Orthogonality is the algebra behind spectral expansion: projecting onto one eigenfunction removes
+                every other stationary component.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 19</span>
+                <h3>A free wave packet disperses while its center moves classically</h3>
+                <p>
+                  A free particle has no force, so \(\langle x\rangle\) moves at the group velocity
+                  \(v_g=\hbar k_0/m\). But different momentum components carry different phases, so the packet
+                  spreads even without a potential.
+                </p>
+              </div>
+              <canvas id="free-canvas" width="900" height="540" role="img" aria-label="Free-particle Gaussian wave packet dispersion"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Initial width sigma0
+                  <input id="free-width" type="range" min="22" max="115" value="56" />
+                </label>
+                <label>
+                  Mean wave number k0
+                  <input id="free-k" type="range" min="-100" max="100" value="48" />
+                </label>
+                <output id="free-readout" for="free-width free-k">Free-particle dispersion readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \Psi(x,t)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+                \phi(k)e^{i(kx-\omega(k)t)}\,dk,\qquad
+                \omega(k)=\frac{\hbar k^2}{2m}.
+              \]
+              \[
+                \langle x\rangle=x_0+\frac{\hbar k_0}{m}t,\qquad
+                \sigma_x(t)=\sigma_0\sqrt{1+\left(\frac{\hbar t}{2m\sigma_0^2}\right)^2}.
+              \]
+              <p>
+                The center follows the classical free-particle law, while the width grows because the dispersion
+                relation is quadratic. This is the dynamical side of the Fourier uncertainty relation.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 20</span>
+                <h3>Infinite square well eigenstates</h3>
+                <p>
+                  Boundary conditions force nodes at both walls. The integer \(n\) counts half-wavelengths in
+                  the box, so energy grows like \(n^2\).
+                </p>
+              </div>
+              <canvas id="well-canvas" width="900" height="500" role="img" aria-label="Infinite square well eigenstates"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Quantum number n
+                  <input id="well-level" type="range" min="1" max="6" value="2" />
+                </label>
+                <output id="well-readout" for="well-level">n = 2</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 21</span>
+                <h3>Finite square well bound states</h3>
+                <p>
+                  Relax the infinite walls and the wavefunction leaks into the classically forbidden region.
+                  Bound states come in even and odd parity families, and the allowed energies are roots of
+                  transcendental equations rather than simple multiples of \(n^2\).
+                </p>
+              </div>
+              <canvas id="finite-well-canvas" width="900" height="540" role="img" aria-label="Finite square well bound states and tunneling tails"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Well depth z0
+                  <input id="finite-well-depth" type="range" min="180" max="700" value="470" />
+                </label>
+                <label>
+                  Bound-state index
+                  <input id="finite-well-state" type="range" min="1" max="6" value="2" />
+                </label>
+                <output id="finite-well-readout" for="finite-well-depth finite-well-state">Finite well readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                z=\frac{ka}{2},\qquad z_0=\frac{a}{2}\sqrt{\frac{2mV_0}{\hbar^2}},\qquad
+                \kappa a/2=\sqrt{z_0^2-z^2}.
+              \]
+              \[
+                \text{even: } z\tan z=\sqrt{z_0^2-z^2},\qquad
+                \text{odd: } -z\cot z=\sqrt{z_0^2-z^2}.
+              \]
+              <p>
+                Finite walls make the boundary condition softer: \(\psi\) and \(d\psi/dx\) remain continuous,
+                but the tail outside the well is exponential. As \(V_0\) grows, the roots move toward the
+                infinite-well spectrum.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 22</span>
+                <h3>Parity symmetry separates even and odd states</h3>
+                <p>
+                  If \(V(x)=V(-x)\), the Hamiltonian commutes with the parity operator. Energy eigenstates can
+                  be chosen even or odd, and odd operators such as \(x\) only connect states of opposite parity.
+                  Mix the two families and then break the symmetry slightly.
+                </p>
+              </div>
+              <canvas id="parity-canvas" width="900" height="560" role="img" aria-label="Parity symmetry, even and odd wavefunctions, and selection rules"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Odd-state weight
+                  <input id="parity-mix" type="range" min="0" max="100" value="38" />
+                </label>
+                <label>
+                  Relative phase
+                  <input id="parity-phase" type="range" min="-180" max="180" value="0" />
+                </label>
+                <label>
+                  Symmetry breaking
+                  <input id="parity-tilt" type="range" min="-100" max="100" value="0" />
+                </label>
+                <output id="parity-readout" for="parity-mix parity-phase parity-tilt">Parity symmetry readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                (\hat P\psi)(x)=\psi(-x),\qquad \hat P^2=I,\qquad
+                [\hat H,\hat P]=0 \quad \text{if } V(x)=V(-x).
+              \]
+              \[
+                \hat P|e\rangle=+|e\rangle,\qquad \hat P|o\rangle=-|o\rangle,\qquad
+                \langle e|\hat x|e\rangle=\langle o|\hat x|o\rangle=0.
+              \]
+              \[
+                \langle e|\hat x|o\rangle \text{ can be nonzero, so odd perturbations mix opposite parity.}
+              \]
+              <p>
+                Parity is a shortcut for calculation: many integrals vanish before you compute them because the
+                integrand is odd.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 23</span>
+                <h3>Delta-function well: one bound state, exact scattering</h3>
+                <p>
+                  Shrink an attractive well while keeping its area fixed and it becomes
+                  \(V(x)=-\alpha\delta(x)\). The model is singular but exactly solvable: it has one bound
+                  state and a simple reflection/transmission law for incoming waves.
+                </p>
+              </div>
+              <canvas id="delta-canvas" width="900" height="540" role="img" aria-label="Attractive delta potential bound state and scattering"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Delta strength alpha
+                  <input id="delta-strength" type="range" min="15" max="120" value="62" />
+                </label>
+                <label>
+                  Incoming wave number k
+                  <input id="delta-k" type="range" min="20" max="140" value="72" />
+                </label>
+                <output id="delta-readout" for="delta-strength delta-k">Delta potential readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                V(x)=-\alpha\delta(x),\qquad
+                \psi_b(x)=\sqrt{\kappa}\,e^{-\kappa |x|},\qquad
+                E_b=-\frac{\hbar^2\kappa^2}{2m},\quad \kappa=\frac{m\alpha}{\hbar^2}.
+              \]
+              \[
+                \psi'(0^+)-\psi'(0^-)
+                =-\frac{2m\alpha}{\hbar^2}\psi(0),\qquad
+                T=\frac{k^2}{k^2+\kappa^2},\quad R=\frac{\kappa^2}{k^2+\kappa^2}.
+              \]
+              <p>
+                The wavefunction remains continuous, but its slope jumps at the spike. This is the cleanest
+                place to see how boundary conditions can encode a singular interaction.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 24</span>
+                <h3>Spectral expansion and quantum beats</h3>
+                <p>
+                  A general state in the well is a superposition of stationary states. Each energy component
+                  keeps its probability weight \(|c_n|^2\), but its phase rotates at angular frequency
+                  \(E_n/\hbar\). Change the coefficients and watch the probability density breathe as the
+                  relative phases separate.
+                </p>
+              </div>
+              <canvas id="spectral-canvas" width="900" height="540" role="img" aria-label="Spectral expansion and time evolution in an infinite square well"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Coefficient c2
+                  <input id="spectral-c2" type="range" min="-100" max="100" value="68" />
+                </label>
+                <label>
+                  Coefficient c3
+                  <input id="spectral-c3" type="range" min="-100" max="100" value="42" />
+                </label>
+                <output id="spectral-readout" for="spectral-c2 spectral-c3">Spectral expansion readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \Psi(x,t)=\sum_{n=1}^{\infty}c_n\psi_n(x)e^{-iE_nt/\hbar},
+                \qquad
+                c_n=\int_0^a\psi_n^*(x)\Psi(x,0)\,dx.
+              \]
+              \[
+                P(E_n)=|c_n|^2,\qquad
+                \langle H\rangle=\sum_n |c_n|^2E_n.
+              \]
+              <p>
+                An energy eigenstate is stationary because only an overall phase changes. A superposition is
+                different: phase differences \(e^{-i(E_m-E_n)t/\hbar}\) move probability around the well.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 25</span>
+                <h3>Rectangular barrier and tunneling</h3>
+                <p>
+                  When \(E\lt V_0\), the wave inside the barrier is not oscillatory. It decays like
+                  \(e^{-\kappa x}\), but a nonzero tail can still emerge on the other side.
+                </p>
+              </div>
+              <canvas id="barrier-canvas" width="900" height="500" role="img" aria-label="Rectangular barrier tunneling visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Energy fraction E / V0
+                  <input id="barrier-energy" type="range" min="10" max="95" value="55" />
+                </label>
+                <label>
+                  Barrier width
+                  <input id="barrier-width" type="range" min="20" max="120" value="64" />
+                </label>
+                <output id="barrier-readout" for="barrier-energy barrier-width">Tunneling readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Infinite square well</h3>
+                <p>
+                  \[
+                    \psi_n(x)=\sqrt{\frac{2}{a}}\sin\frac{n\pi x}{a},
+                    \qquad
+                    E_n=\frac{n^2\pi^2\hbar^2}{2ma^2}.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Harmonic oscillator</h3>
+                <p>
+                  \[
+                    \hat H=\hbar\omega\left(\hat a^\dagger\hat a+\frac12\right),
+                    \qquad
+                    E_n=\hbar\omega\left(n+\frac12\right).
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Tunneling</h3>
+                <p>
+                  For a barrier with \(E\lt V_0\), the wave decays inside the classically forbidden region:
+                  \[
+                    \psi(x)\sim e^{-\kappa x},
+                    \qquad
+                    \kappa=\sqrt{\frac{2m(V_0-E)}{\hbar^2}}.
+                  \]
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="oscillator" class="section-block">
+            <p class="kicker">9. Harmonic oscillator</p>
+            <h2>The harmonic oscillator is the algebraic engine of quantum mechanics.</h2>
+            <p>
+              Near a stable equilibrium, many potentials look quadratic:
+              <span class="equation">\(V(x)\approx \frac12m\omega^2x^2\)</span>. The oscillator is therefore
+              more than a toy model; it is the local language of vibrations, fields, photons, and phonons.
+            </p>
+            <p>
+              Its Hamiltonian can be factored into ladder operators. Instead of solving a new differential
+              equation for each level, one climbs the spectrum:
+              <span class="equation">\(\hat a^\dagger|n\rangle=\sqrt{n+1}|n+1\rangle\)</span>.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 26</span>
+                <h3>Hermite modes and energy ladder</h3>
+                <p>
+                  Choose the quantum number \(n\). The curve shows \(\psi_n(\xi)\), the shaded density shows
+                  \(|\psi_n(\xi)|^2\), and the ladder marks the equally spaced energy levels.
+                </p>
+              </div>
+              <canvas id="oscillator-canvas" width="900" height="540" role="img" aria-label="Harmonic oscillator Hermite eigenstate visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Quantum number n
+                  <input id="oscillator-level" type="range" min="0" max="6" value="2" />
+                </label>
+                <output id="oscillator-readout" for="oscillator-level">Oscillator readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Hamiltonian and ladder operators</h3>
+                <p>
+                  \[
+                    \hat H=\frac{\hat p^2}{2m}+\frac12m\omega^2\hat x^2,
+                    \qquad
+                    \hat H=\hbar\omega\left(\hat a^\dagger\hat a+\frac12\right).
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Number states</h3>
+                <p>
+                  \[
+                    \hat N|n\rangle=n|n\rangle,\qquad
+                    E_n=\hbar\omega\left(n+\frac12\right),\qquad n=0,1,2,\ldots
+                  \]
+                  The zero-point energy is forced by the commutator \([\hat a,\hat a^\dagger]=1\).
+                </p>
+              </section>
+              <section>
+                <h3>Position-space wavefunctions</h3>
+                <p>
+                  With \(\xi=\sqrt{m\omega/\hbar}\,x\),
+                  \[
+                    \psi_n(\xi)=\frac{1}{\sqrt{2^n n!}}\left(\frac{m\omega}{\pi\hbar}\right)^{1/4}
+                    H_n(\xi)e^{-\xi^2/2}.
+                  \]
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="hydrogen" class="section-block">
+            <p class="kicker">10. Three dimensions</p>
+            <h2>Hydrogen turns symmetry into quantum numbers.</h2>
+            <p>
+              For any central potential \(V(r)\), the Schrodinger equation separates into radial and angular
+              parts. In the Coulomb potential, the energy depends only on the principal quantum number \(n\),
+              while \(\ell\) and \(m\) describe angular momentum and orientation.
+            </p>
+            <p>
+              The wavefunction has the form
+              <span class="equation">\(\Psi_{n\ell m}(r,\theta,\phi)=R_{n\ell}(r)Y_\ell^m(\theta,\phi)\)</span>.
+              The radial probability density is \(P(r)=r^2|R_{n\ell}(r)|^2\).
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 27</span>
+                <h3>Hydrogen radial probability</h3>
+                <p>
+                  Choose \(n\) and \(\ell\). The curve shows where the electron is likely to be found in radius;
+                  the sketch marks the angular family: s, p, or d.
+                </p>
+              </div>
+              <canvas id="hydrogen-canvas" width="900" height="520" role="img" aria-label="Hydrogen radial probability visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Principal quantum number n
+                  <input id="hydrogen-n" type="range" min="1" max="3" value="2" />
+                </label>
+                <label>
+                  Angular momentum l
+                  <input id="hydrogen-l" type="range" min="0" max="2" value="1" />
+                </label>
+                <output id="hydrogen-readout" for="hydrogen-n hydrogen-l">Hydrogen readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Central-potential separation</h3>
+                <p>
+                  \[
+                    \Psi(r,\theta,\phi)=R(r)Y_\ell^m(\theta,\phi),
+                    \qquad
+                    \hat L^2Y_\ell^m=\hbar^2\ell(\ell+1)Y_\ell^m.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Hydrogen spectrum</h3>
+                <p>
+                  \[
+                    E_n=-\frac{13.6\ \mathrm{eV}}{n^2},
+                    \qquad
+                    n=1,2,3,\ldots
+                  \]
+                  The degeneracy reflects the Coulomb potential's extra symmetry.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 28</span>
+                <h3>Spherical harmonics and angular nodes</h3>
+                <p>
+                  The angular functions \(Y_\ell^m(\theta,\phi)\) are simultaneous eigenfunctions of
+                  \(\hat L^2\) and \(\hat L_z\). Choose \(\ell\) and \(m\) to see how nodal cones, nodal
+                  meridians, and azimuthal phase winding encode angular momentum.
+                </p>
+              </div>
+              <canvas id="spherical-canvas" width="900" height="560" role="img" aria-label="Spherical harmonics angular nodes and phase winding"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Orbital angular momentum ell
+                  <input id="spherical-l" type="range" min="0" max="4" value="2" />
+                </label>
+                <label>
+                  Magnetic quantum number m
+                  <input id="spherical-m" type="range" min="-2" max="2" value="1" />
+                </label>
+                <output id="spherical-readout" for="spherical-l spherical-m">Spherical harmonic readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat L^2Y_\ell^m=\hbar^2\ell(\ell+1)Y_\ell^m,\qquad
+                \hat L_zY_\ell^m=\hbar mY_\ell^m.
+              \]
+              \[
+                Y_\ell^m(\theta,\phi)=N_{\ell m}P_\ell^{|m|}(\cos\theta)e^{im\phi},\qquad
+                m=-\ell,\ldots,\ell.
+              \]
+              <p>
+                The \(\theta\)-dependence controls polar nodes, while \(e^{im\phi}\) winds the phase around the
+                \(z\)-axis. These are the angular pieces that later control selection rules and partial waves.
+              </p>
+            </div>
+          </section>
+
+          <section id="spin" class="section-block">
+            <p class="kicker">11. Angular momentum and spin</p>
+            <h2>Spin is intrinsic angular momentum with discrete projections.</h2>
+            <p>
+              Orbital angular momentum comes from rotations in space. Spin obeys the same angular-momentum algebra,
+              but it is not a tiny classical rotation of a material object. A spin-\(\tfrac12\) state has only two
+              possible \(S_z\) measurement results:
+              <span class="equation">\(m_s=+\tfrac12\)</span> or <span class="equation">\(m_s=-\tfrac12\)</span>.
+            </p>
+            <p>
+              The commutator algebra fixes the ladder structure. Once \(j\) is known, the allowed projections are
+              \(m=-j,-j+1,\ldots,j\), and the operators \(\hat J_\pm\) move between neighboring rungs.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 29</span>
+                <h3>Stern-Gerlach probabilities and \(m\)-ladders</h3>
+                <p>
+                  Rotate a spin-\(\tfrac12\) preparation relative to the \(z\)-axis, then compare its two
+                  measurement probabilities with the projection ladder for a chosen total angular momentum \(j\).
+                </p>
+              </div>
+              <canvas id="spin-canvas" width="900" height="540" role="img" aria-label="Spin measurement and angular momentum ladder visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Preparation angle beta
+                  <input id="spin-angle" type="range" min="0" max="180" value="64" />
+                </label>
+                <label>
+                  Total angular momentum j
+                  <input id="spin-j" type="range" min="1" max="4" value="3" />
+                </label>
+                <output id="spin-readout" for="spin-angle spin-j">Spin readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Angular momentum algebra</h3>
+                <p>
+                  \[
+                    [\hat J_i,\hat J_j]=i\hbar\epsilon_{ijk}\hat J_k,
+                    \qquad
+                    \hat J^2|j,m\rangle=\hbar^2j(j+1)|j,m\rangle.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Ladder operators</h3>
+                <p>
+                  \[
+                    \hat J_\pm|j,m\rangle
+                    =\hbar\sqrt{j(j+1)-m(m\pm1)}\,|j,m\pm1\rangle.
+                  \]
+                  The ladder stops because the square-root factor becomes zero at \(m=\pm j\).
+                </p>
+              </section>
+              <section>
+                <h3>Spin-\(\tfrac12\) measurement</h3>
+                <p>
+                  \[
+                    |\chi\rangle=\cos\frac{\beta}{2}|+\rangle
+                    +e^{i\alpha}\sin\frac{\beta}{2}|-\rangle,
+                    \qquad
+                    P(+z)=\cos^2\frac{\beta}{2}.
+                  \]
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 30</span>
+                <h3>Adding two spin-\(\tfrac12\) systems</h3>
+                <p>
+                  The product basis \(|+\rangle|-\rangle,|-\rangle|+\rangle\) is not the basis of definite total
+                  spin. Change the relative weight and phase, then watch the same state resolve into symmetric
+                  triplet and antisymmetric singlet sectors.
+                </p>
+              </div>
+              <canvas id="coupling-canvas" width="900" height="540" role="img" aria-label="Clebsch-Gordan spin-coupling visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Product-basis mix gamma
+                  <input id="coupling-mix" type="range" min="0" max="90" value="45" />
+                </label>
+                <label>
+                  Relative phase phi
+                  <input id="coupling-phase" type="range" min="0" max="180" value="0" />
+                </label>
+                <output id="coupling-readout" for="coupling-mix coupling-phase">Spin-coupling readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |1,1\rangle=|+\rangle|+\rangle,\qquad |1,-1\rangle=|-\rangle|-\rangle.
+              \]
+              \[
+                |1,0\rangle=\frac{|+\rangle|-\rangle+|-\rangle|+\rangle}{\sqrt2}.
+              \]
+              \[
+                |0,0\rangle=\frac{|+\rangle|-\rangle-|-\rangle|+\rangle}{\sqrt2}.
+              \]
+              \[
+                |\psi\rangle=\cos\gamma\,|+\rangle|-\rangle
+                +e^{i\phi}\sin\gamma\,|-\rangle|+\rangle.
+              \]
+              \[
+                P_{1,0}=\frac{1+\sin(2\gamma)\cos\phi}{2}.
+              \]
+              \[
+                P_{0,0}=\frac{1-\sin(2\gamma)\cos\phi}{2}.
+              \]
+              <p>
+                Clebsch-Gordan coefficients are amplitudes for changing from uncoupled labels
+                \((m_1,m_2)\) to total labels \((j,m)\).
+              </p>
+            </div>
+          </section>
+
+          <section id="identical-particles" class="section-block">
+            <p class="kicker">12. Identical particles</p>
+            <h2>Exchange symmetry changes the shape of two-particle probability.</h2>
+            <p>
+              Identical quantum particles are not merely hard to label. The physical state must transform in a
+              definite way when the particle labels are exchanged:
+              <span class="equation">\(\hat P_{12}\Psi=\pm\Psi\)</span>. The plus sign describes bosonic
+              symmetry; the minus sign describes fermionic antisymmetry.
+            </p>
+            <p>
+              For two one-particle orbitals \(\psi_a\) and \(\psi_b\), the allowed two-particle spatial states are
+              symmetric or antisymmetric combinations. This is the mathematical source of bunching, antibunching,
+              and the Pauli exclusion principle.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 31</span>
+                <h3>Exchange symmetry in the \(x_1,x_2\) plane</h3>
+                <p>
+                  Move two wave packets together. Bosonic symmetry enhances the diagonal \(x_1\approx x_2\);
+                  fermionic antisymmetry forces a node on the diagonal.
+                </p>
+              </div>
+              <canvas id="exchange-canvas" width="900" height="540" role="img" aria-label="Identical particle exchange symmetry visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Exchange rule
+                  <select id="exchange-type">
+                    <option value="boson">Bosons: symmetric</option>
+                    <option value="fermion">Fermions: antisymmetric</option>
+                    <option value="distinguishable">Distinguishable product</option>
+                  </select>
+                </label>
+                <label>
+                  Orbital separation
+                  <input id="exchange-separation" type="range" min="18" max="150" value="74" />
+                </label>
+                <output id="exchange-readout" for="exchange-type exchange-separation">Exchange readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Symmetric and antisymmetric states</h3>
+                <p>
+                  \[
+                    \Psi_\pm(x_1,x_2)=\frac{1}{\sqrt{2(1\pm |S|^2)}}
+                    \left[\psi_a(x_1)\psi_b(x_2)\pm\psi_b(x_1)\psi_a(x_2)\right].
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Exchange eigenvalue</h3>
+                <p>
+                  \[
+                    \hat P_{12}\Psi_\pm(x_1,x_2)=\Psi_\pm(x_2,x_1)=\pm\Psi_\pm(x_1,x_2).
+                  \]
+                  Observables depend on \(|\Psi|^2\), but the sign controls interference between exchanged
+                  alternatives.
+                </p>
+              </section>
+              <section>
+                <h3>Pauli exclusion</h3>
+                <p>
+                  If two fermions have the same spin state, their spatial state must be antisymmetric. Then
+                  \[
+                    \Psi_-(x,x)=0,
+                  \]
+                  so two identical fermions cannot occupy the same complete one-particle state.
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="methods" class="section-block">
+            <p class="kicker">13. Beyond exact solutions</p>
+            <h2>Most real problems are solved by controlled approximation.</h2>
+            <p>
+              Once the formalism is in place, the work becomes strategic: identify a small parameter, a good trial
+              space, a symmetry, or a regime where phases simplify. Approximation methods are not shortcuts around
+              quantum mechanics; they are how the theory becomes useful.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 32</span>
+                <h3>Quartic perturbation of the oscillator ladder</h3>
+                <p>
+                  Start with the exactly solved oscillator and add a weak anharmonic term,
+                  \(\hat H=\hat H_0+\lambda x^4\). First-order perturbation theory shifts each energy level by
+                  the expectation value of the perturbation in the unperturbed state.
+                </p>
+              </div>
+              <canvas id="perturbation-canvas" width="900" height="540" role="img" aria-label="Time-independent perturbation theory energy shift visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Perturbation strength lambda
+                  <input id="perturbation-lambda" type="range" min="0" max="16" value="5" />
+                </label>
+                <label>
+                  Level n
+                  <input id="perturbation-level" type="range" min="0" max="5" value="2" />
+                </label>
+                <output id="perturbation-readout" for="perturbation-lambda perturbation-level">Perturbation readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat H=\hat H_0+\lambda x^4,\qquad
+                E_n^{(0)}=n+\frac12\quad(\hbar=m=\omega=1)
+              \]
+              \[
+                E_n\approx E_n^{(0)}+\lambda\langle n^{(0)}|x^4|n^{(0)}\rangle
+                =n+\frac12+\frac{3\lambda}{4}(2n^2+2n+1).
+              \]
+              \[
+                |n\rangle\approx |n^{(0)}\rangle+
+                \lambda\sum_{m\ne n}\frac{\langle m^{(0)}|x^4|n^{(0)}\rangle}
+                {E_n^{(0)}-E_m^{(0)}}|m^{(0)}\rangle.
+              \]
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 33</span>
+                <h3>Degenerate perturbation and avoided crossing</h3>
+                <p>
+                  When two unperturbed states are degenerate or nearly degenerate, the denominators in ordinary
+                  perturbation theory stop being harmless. The right first step is to diagonalize the perturbation
+                  inside the degenerate subspace.
+                </p>
+              </div>
+              <canvas id="degenerate-canvas" width="900" height="540" role="img" aria-label="Degenerate perturbation theory avoided-crossing visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Bare detuning delta
+                  <input id="degenerate-detuning" type="range" min="-180" max="180" value="40" />
+                </label>
+                <label>
+                  Coupling W_ab
+                  <input id="degenerate-coupling" type="range" min="0" max="140" value="58" />
+                </label>
+                <output id="degenerate-readout" for="degenerate-detuning degenerate-coupling">Degenerate perturbation readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                W_{ij}=\langle i^{(0)}|\hat H'|j^{(0)}\rangle,\qquad i,j\in\mathcal D.
+              \]
+              \[
+                \det(W-wI)=0,\qquad
+                E_\alpha\approx E^{(0)}+\lambda w_\alpha.
+              \]
+              \[
+                H_{\mathrm{eff}}=
+                \begin{pmatrix}
+                  -\Delta/2 & V\\
+                  V & \Delta/2
+                \end{pmatrix},
+                \qquad
+                E_\pm=\pm\sqrt{(\Delta/2)^2+V^2}.
+              \]
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 34</span>
+                <h3>Stark effect: fields mix opposite parity</h3>
+                <p>
+                  An electric field adds \( \hat H'=-\hat{\mathbf d}\cdot\mathbf E\). In a nondegenerate state,
+                  parity often kills the first-order shift. In a degenerate opposite-parity subspace, the same
+                  perturbation must be diagonalized and produces a linear Stark splitting.
+                </p>
+              </div>
+              <canvas id="stark-canvas" width="900" height="560" role="img" aria-label="Linear and quadratic Stark effect visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Electric field strength
+                  <input id="stark-field" type="range" min="-180" max="180" value="85" />
+                </label>
+                <label>
+                  Opposite-parity detuning
+                  <input id="stark-detuning" type="range" min="0" max="180" value="25" />
+                </label>
+                <label>
+                  Dipole matrix element
+                  <input id="stark-dipole" type="range" min="20" max="160" value="85" />
+                </label>
+                <output id="stark-readout" for="stark-field stark-detuning stark-dipole">Stark-effect readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat H'=-qEz,\qquad
+                \langle n\ell m|z|n\ell m\rangle=0
+                \quad \text{for a nondegenerate parity eigenstate.}
+              \]
+              \[
+                H_{\mathrm{eff}}=
+                \begin{pmatrix}
+                  -\Delta/2 & -dE\\
+                  -dE & \Delta/2
+                \end{pmatrix},
+                \qquad
+                E_\pm=\pm\sqrt{(\Delta/2)^2+d^2E^2}.
+              \]
+              \[
+                \Delta=0 \Rightarrow E_\pm=\pm |dE|
+                \quad\text{linear Stark effect},\qquad
+                |dE|\ll\Delta \Rightarrow \Delta E\simeq-\frac{d^2E^2}{\Delta}.
+              \]
+              <p>
+                Degeneracy changes the power of the field: linear splitting signals that the perturbation mixes
+                states before ordinary second-order formulas are valid.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 35</span>
+                <h3>Variational Gaussian for an anharmonic well</h3>
+                <p>
+                  Try a Gaussian wavefunction in \(V(x)=x^2/2+\lambda x^4\). The trial energy
+                  \(E(\alpha)=\langle\phi_\alpha|\hat H|\phi_\alpha\rangle\) is an upper bound; tuning
+                  \(\alpha\) searches for the best bound inside the chosen trial family.
+                </p>
+              </div>
+              <canvas id="variational-canvas" width="900" height="540" role="img" aria-label="Variational Gaussian trial state in an anharmonic potential"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Gaussian width parameter alpha
+                  <input id="variational-alpha" type="range" min="35" max="220" value="100" />
+                </label>
+                <label>
+                  Anharmonic strength lambda
+                  <input id="variational-lambda" type="range" min="0" max="80" value="20" />
+                </label>
+                <output id="variational-readout" for="variational-alpha variational-lambda">Variational readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \phi_\alpha(x)=\left(\frac{\alpha}{\pi}\right)^{1/4}e^{-\alpha x^2/2}
+              \]
+              \[
+                E(\alpha)=\frac{\alpha}{4}+\frac{1}{4\alpha}+\frac{3\lambda}{4\alpha^2},
+                \qquad
+                E_0\le E(\alpha).
+              \]
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 36</span>
+                <h3>WKB action and turning points</h3>
+                <p>
+                  WKB turns a slowly varying potential into a local momentum
+                  \(p(x)=\sqrt{2m(E-V(x))}\). The wave oscillates where \(E>V\), decays where \(E<V\), and
+                  only special energies fit an integer number of half-phases between the turning points.
+                </p>
+              </div>
+              <canvas id="wkb-canvas" width="900" height="540" role="img" aria-label="WKB action integral and turning point visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Energy E
+                  <input id="wkb-energy" type="range" min="80" max="560" value="270" />
+                </label>
+                <label>
+                  Anharmonic shape beta
+                  <input id="wkb-beta" type="range" min="0" max="45" value="12" />
+                </label>
+                <output id="wkb-readout" for="wkb-energy wkb-beta">WKB readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                p(x)=\sqrt{2m(E-V(x))},\qquad
+                \psi_{\text{WKB}}(x)\approx \frac{C}{\sqrt{p(x)}}
+                \sin\left(\frac{1}{\hbar}\int_{x_1}^{x}p(x')\,dx'+\frac{\pi}{4}\right).
+              \]
+              \[
+                \int_{x_1}^{x_2}p(x)\,dx=\left(n+\frac12\right)\pi\hbar.
+              \]
+              \[
+                \psi(x)\propto\frac{1}{\sqrt{\kappa(x)}}
+                \exp\left[-\frac{1}{\hbar}\int_{x_2}^{x}\kappa(x')\,dx'\right],
+                \qquad
+                \kappa(x)=\sqrt{2m(V(x)-E)}.
+              \]
+            </div>
+
+            <div class="derivation-grid">
+              <section class="derivation-card">
+                <h3>Perturbation theory</h3>
+                <p>
+                  If \(\hat H=\hat H_0+\lambda\hat H'\), then the first-order energy correction is
+                  \[
+                    E_n^{(1)}=\langle n^{(0)}|\hat H'|n^{(0)}\rangle.
+                  \]
+                  The method is strongest when nearby unperturbed levels are well separated.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Variational principle</h3>
+                <p>
+                  Any normalized trial state gives an upper bound on the ground energy:
+                  \[
+                    E_0\le \langle\phi|\hat H|\phi\rangle.
+                  \]
+                  Good physics enters through a trial family with meaningful parameters.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>WKB</h3>
+                <p>
+                  In slowly varying potentials,
+                  \[
+                    \psi(x)\approx \frac{C}{\sqrt{p(x)}}\exp\left(\pm\frac{i}{\hbar}\int^x p(x')\,dx'\right).
+                  \]
+                  Turning points require connection formulas.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Scattering</h3>
+                <p>
+                  Far from a localized potential,
+                  \[
+                    \psi(\mathbf r)\sim e^{ikz}+f(\theta)\frac{e^{ikr}}{r}
+                  \]
+                  \[
+                    \frac{d\sigma}{d\Omega}=|f(\theta)|^2.
+                  \]
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Spin and angular momentum</h3>
+                <p>
+                  The algebra
+                  \[
+                    [\hat J_i,\hat J_j]=i\hbar\epsilon_{ijk}\hat J_k
+                  \]
+                  determines ladder operators, magnetic quantum numbers, and selection rules.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Identical particles</h3>
+                <p>
+                  Exchange symmetry imposes
+                  \[
+                    \Psi(\mathbf r_1,\mathbf r_2)=\pm\Psi(\mathbf r_2,\mathbf r_1).
+                  \]
+                  The minus sign for fermions leads to the Pauli exclusion principle.
+                </p>
+              </section>
+            </div>
+
+            <div class="problem-ladder">
+              <h3>Problem ladder for deep study</h3>
+              <ol>
+                <li>Normalize a Gaussian wave packet and compute \(\langle x\rangle\), \(\langle p\rangle\), \(\Delta x\), and \(\Delta p\).</li>
+                <li>Solve the infinite square well and prove orthogonality of \(\psi_m\) and \(\psi_n\).</li>
+                <li>Use ladder operators to derive the harmonic oscillator spectrum without solving a differential equation.</li>
+                <li>Compute the first-order Stark shift in a simple two-level truncation.</li>
+                <li>Use WKB quantization to estimate bound-state energies in a slowly varying potential.</li>
+                <li>Derive a differential cross section from a given scattering amplitude.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section id="scattering" class="section-block">
+            <p class="kicker">14. Scattering</p>
+            <h2>Scattering turns a potential into an angular probability map.</h2>
+            <p>
+              In a scattering experiment, a beam comes in with a well-defined momentum and the detector records
+              how much probability is redirected into each solid angle. Far from the target, the wavefunction has
+              an incoming plane-wave part and an outgoing spherical-wave part.
+            </p>
+            <p>
+              The measurable object is the differential cross section:
+              <span class="equation">\(\frac{d\sigma}{d\Omega}=|f(\theta)|^2\)</span>. In the Born approximation,
+              \(f(\theta)\) is controlled by the Fourier transform of the potential at momentum transfer
+              \(q=2k\sin(\theta/2)\).
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 37</span>
+                <h3>Born scattering from a screened potential</h3>
+                <p>
+                  For a Yukawa-like screened potential, the model amplitude scales like
+                  \(f(\theta)\propto(q^2+\mu^2)^{-1}\). Increase \(k\) or reduce the screening scale \(\mu\) to
+                  make forward scattering more sharply peaked.
+                </p>
+              </div>
+              <canvas id="scattering-canvas" width="900" height="540" role="img" aria-label="Scattering differential cross section visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Incident wave number k
+                  <input id="scattering-k" type="range" min="40" max="180" value="100" />
+                </label>
+                <label>
+                  Screening parameter mu
+                  <input id="scattering-mu" type="range" min="20" max="140" value="65" />
+                </label>
+                <output id="scattering-readout" for="scattering-k scattering-mu">Scattering readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Asymptotic form</h3>
+                <p>
+                  \[
+                    \psi(\mathbf r)\sim e^{ikz}+f(\theta)\frac{e^{ikr}}{r},
+                    \qquad
+                    \frac{d\sigma}{d\Omega}=|f(\theta)|^2.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Momentum transfer</h3>
+                <p>
+                  \[
+                    q=|\mathbf k'-\mathbf k|=2k\sin\frac{\theta}{2}.
+                  \]
+                  Small angles mean small momentum transfer; backward scattering probes shorter structure.
+                </p>
+              </section>
+              <section>
+                <h3>Born approximation</h3>
+                <p>
+                  \[
+                    f(\theta)\approx-\frac{2m}{4\pi\hbar^2}
+                    \int e^{-i\mathbf q\cdot\mathbf r}V(\mathbf r)\,d^3r.
+                  \]
+                  The first Born approximation is strongest when the potential is weak enough that one scattering
+                  event dominates.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 38</span>
+                <h3>Coulomb and Rutherford scattering</h3>
+                <p>
+                  A pure \(1/r\) Coulomb potential is long-ranged, so the forward direction is singular and the
+                  Born picture needs care. The exact quantum result has the same angular dependence as Rutherford's
+                  classical formula: a strong \(1/\sin^4(\theta/2)\) forward peak.
+                </p>
+              </div>
+              <canvas id="rutherford-canvas" width="900" height="560" role="img" aria-label="Coulomb Rutherford scattering visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Incident energy E
+                  <input id="rutherford-energy" type="range" min="40" max="220" value="115" />
+                </label>
+                <label>
+                  Coulomb strength kappa
+                  <input id="rutherford-strength" type="range" min="20" max="180" value="85" />
+                </label>
+                <label>
+                  Detector angle theta
+                  <input id="rutherford-angle" type="range" min="8" max="170" value="55" />
+                </label>
+                <output id="rutherford-readout" for="rutherford-energy rutherford-strength rutherford-angle">Rutherford readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                V(r)=\frac{\kappa}{r},\qquad
+                \eta=\frac{m\kappa}{\hbar^2 k}.
+              \]
+              \[
+                f_C(\theta)=-\frac{\eta}{2k\sin^2(\theta/2)}
+                \exp\left[-2i\eta\ln\sin\frac{\theta}{2}+2i\sigma_0\right].
+              \]
+              \[
+                \frac{d\sigma}{d\Omega}
+                =\frac{\eta^2}{4k^2\sin^4(\theta/2)}
+                =\left(\frac{\kappa}{4E}\right)^2\csc^4\frac{\theta}{2}.
+              \]
+              <p>
+                The Coulomb phase changes the amplitude, but the measurable angular distribution matches the
+                classical Rutherford law.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 39</span>
+                <h3>Partial waves and phase shifts</h3>
+                <p>
+                  For a spherically symmetric potential, each angular momentum channel scatters with a phase shift
+                  \(\delta_\ell\). Low-energy scattering is often dominated by the first few channels, so changing
+                  \(s\)-, \(p\)-, and \(d\)-wave phase shifts reshapes the angular pattern directly.
+                </p>
+              </div>
+              <canvas id="partial-waves-canvas" width="900" height="540" role="img" aria-label="Partial-wave scattering phase shift visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  s-wave phase delta_0
+                  <input id="phase-s" type="range" min="0" max="180" value="78" />
+                </label>
+                <label>
+                  p-wave phase delta_1
+                  <input id="phase-p" type="range" min="0" max="180" value="32" />
+                </label>
+                <label>
+                  d-wave phase delta_2
+                  <input id="phase-d" type="range" min="0" max="180" value="14" />
+                </label>
+                <output id="partial-waves-readout" for="phase-s phase-p phase-d">Partial-wave readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                f(\theta)=\frac{1}{k}\sum_{\ell=0}^{\infty}a_\ell(\theta),
+              \]
+              \[
+                a_\ell(\theta)=(2\ell+1)e^{i\delta_\ell}\sin\delta_\ell\,P_\ell(\cos\theta).
+              \]
+              \[
+                \frac{d\sigma}{d\Omega}=|f(\theta)|^2.
+              \]
+              \[
+                \sigma_{\mathrm{tot}}=\frac{4\pi}{k^2}
+                \sum_{\ell=0}^{\infty}(2\ell+1)\sin^2\delta_\ell.
+              \]
+              <p>\(\ell=0\) gives isotropic \(s\)-wave scattering; higher \(\ell\) add angular structure.</p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 40</span>
+                <h3>Optical theorem and unitarity</h3>
+                <p>
+                  The forward scattering amplitude knows about every angle. Adjust phase shifts and loss from the
+                  elastic channel; the total cross section is still fixed by \(\operatorname{Im} f(0)\).
+                </p>
+              </div>
+              <canvas id="optical-canvas" width="900" height="560" role="img" aria-label="Optical theorem and partial-wave unitarity visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  s-wave phase delta_0
+                  <input id="optical-s" type="range" min="0" max="180" value="68" />
+                </label>
+                <label>
+                  p-wave phase delta_1
+                  <input id="optical-p" type="range" min="0" max="180" value="36" />
+                </label>
+                <label>
+                  d-wave phase delta_2
+                  <input id="optical-d" type="range" min="0" max="180" value="10" />
+                </label>
+                <label>
+                  Elasticity eta
+                  <input id="optical-eta" type="range" min="45" max="100" value="92" />
+                </label>
+                <output id="optical-readout" for="optical-s optical-p optical-d optical-eta">Optical theorem readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                f(\theta)=\frac{1}{2ik}\sum_{\ell=0}^{\infty}(2\ell+1)
+                \left(S_\ell-1\right)P_\ell(\cos\theta),
+                \qquad S_\ell=\eta_\ell e^{2i\delta_\ell}.
+              \]
+              \[
+                \sigma_{\mathrm{tot}}=\frac{4\pi}{k}\operatorname{Im} f(0).
+              \]
+              \[
+                \sigma_{\mathrm{el}}=\frac{\pi}{k^2}\sum_\ell(2\ell+1)|1-S_\ell|^2,
+                \qquad
+                \sigma_{\mathrm{abs}}=\frac{\pi}{k^2}\sum_\ell(2\ell+1)(1-\eta_\ell^2).
+              \]
+              <p>
+                With \(\eta_\ell=1\), scattering is purely elastic; \(\eta_\ell<1\) means probability is removed
+                into other channels, but the optical theorem still balances the flux.
+              </p>
+            </div>
+          </section>
+
+          <section id="transitions" class="section-block">
+            <p class="kicker">15. Time-dependent transitions</p>
+            <h2>A time-dependent perturbation moves probability between levels.</h2>
+            <p>
+              Stationary states do not change their measurement probabilities by themselves. Transitions happen
+              when the Hamiltonian contains a time-dependent perturbation, such as an oscillating electric field
+              coupling two atomic levels.
+            </p>
+            <p>
+              For a driven two-level system, resonance matters. If the drive frequency is close to the level
+              spacing, probability can slosh coherently between \(|g\rangle\) and \(|e\rangle\). With detuning
+              \(\Delta\) and coupling \(\Omega\), the excited-state probability follows the Rabi form.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 41</span>
+                <h3>Rabi oscillations and off-resonant suppression</h3>
+                <p>
+                  Change the coupling and detuning. Stronger coupling moves probability faster; larger detuning
+                  reduces the maximum transition probability even when the drive is left on.
+                </p>
+              </div>
+              <canvas id="transitions-canvas" width="900" height="540" role="img" aria-label="Driven two-level transition and Rabi oscillation visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Detuning Delta
+                  <input id="transition-detuning" type="range" min="-140" max="140" value="35" />
+                </label>
+                <label>
+                  Coupling Omega
+                  <input id="transition-coupling" type="range" min="12" max="160" value="70" />
+                </label>
+                <output id="transition-readout" for="transition-detuning transition-coupling">Transition readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Driven two-level probability</h3>
+                <p>
+                  \[
+                    P_e(t)=\frac{\Omega^2}{\Omega_R^2}
+                    \sin^2\left(\frac{\Omega_R t}{2}\right),
+                    \qquad
+                    \Omega_R=\sqrt{\Omega^2+\Delta^2}.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Transition amplitude</h3>
+                <p>
+                  First-order time-dependent perturbation theory gives
+                  \[
+                    c_f^{(1)}(t)=-\frac{i}{\hbar}\int_0^t
+                    \langle f|\hat H'(t')|i\rangle e^{i\omega_{fi}t'}\,dt'.
+                  \]
+                  Resonant phases add coherently; off-resonant phases mostly cancel.
+                </p>
+              </section>
+              <section>
+                <h3>Fermi golden rule</h3>
+                <p>
+                  For transitions into many nearby final states,
+                  \[
+                    \Gamma_{i\to f}=\frac{2\pi}{\hbar}
+                    |\langle f|\hat H'|i\rangle|^2\rho(E_f).
+                  \]
+                  The density of final states turns coherent amplitude growth into a transition rate.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 42</span>
+                <h3>Electric-dipole selection rules</h3>
+                <p>
+                  The dipole operator is odd under parity and carries one unit of angular momentum. Choose an
+                  initial \((\ell,m)\) state and a photon polarization \(q\), then test which final angular states
+                  can have a nonzero matrix element.
+                </p>
+              </div>
+              <canvas id="selection-canvas" width="900" height="540" role="img" aria-label="Electric dipole selection rule visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Initial orbital ell
+                  <input id="selection-l" type="range" min="0" max="3" value="1" />
+                </label>
+                <label>
+                  Initial magnetic m
+                  <input id="selection-m" type="range" min="-3" max="3" value="0" />
+                </label>
+                <label>
+                  Photon polarization q
+                  <select id="selection-q">
+                    <option value="0">q = 0, linear z</option>
+                    <option value="1">q = +1, sigma plus</option>
+                    <option value="-1">q = -1, sigma minus</option>
+                  </select>
+                </label>
+                <output id="selection-readout" for="selection-l selection-m selection-q">Selection-rule readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \langle n'\ell'm'|\hat{\mathbf d}\cdot\mathbf e_q|n\ell m\rangle
+                \propto R_{n'\ell',n\ell}\int Y_{\ell'}^{m'*}Y_1^qY_\ell^m\,d\Omega.
+              \]
+              \[
+                \Delta \ell=\pm1,\qquad \Delta m=q,\qquad q=0,\pm1.
+              \]
+              \[
+                \Pi_f\Pi_i=-1
+                \quad \text{because } \hat{\mathbf d}=-e\mathbf r \text{ is odd under parity.}
+              \]
+              <p>
+                A transition can be resonant and still dark if the angular integral vanishes by symmetry.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 43</span>
+                <h3>Fine structure and Zeeman splitting</h3>
+                <p>
+                  Hydrogen's Bohr degeneracy is lifted by relativistic corrections and spin-orbit coupling. Add a
+                  weak magnetic field and each \((n,\ell,j)\) level fans into magnetic sublevels labeled by \(m_j\).
+                </p>
+              </div>
+              <canvas id="fine-structure-canvas" width="900" height="540" role="img" aria-label="Fine structure and Zeeman splitting visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Principal n
+                  <input id="fine-n" type="range" min="2" max="6" value="3" />
+                </label>
+                <label>
+                  Orbital ell
+                  <input id="fine-l" type="range" min="0" max="5" value="1" />
+                </label>
+                <label>
+                  Spin-orbit branch
+                  <select id="fine-j">
+                    <option value="1">j = ell + 1/2</option>
+                    <option value="-1">j = ell - 1/2</option>
+                  </select>
+                </label>
+                <label>
+                  Magnetic sublevel 2m_j
+                  <input id="fine-mj" type="range" min="-11" max="11" value="1" />
+                </label>
+                <label>
+                  Magnetic field B
+                  <input id="fine-b" type="range" min="0" max="160" value="55" />
+                </label>
+                <output id="fine-readout" for="fine-n fine-l fine-j fine-mj fine-b">Fine-structure readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                E_{n,j}\simeq -\frac{13.6\,\mathrm{eV}}{n^2}
+                \left[
+                  1+\frac{\alpha^2}{n^2}
+                  \left(\frac{n}{j+\tfrac12}-\frac34\right)
+                \right].
+              \]
+              \[
+                j=\ell\pm\tfrac12,\qquad
+                m_j=-j,-j+1,\ldots,j.
+              \]
+              \[
+                g_j=1+\frac{j(j+1)+s(s+1)-\ell(\ell+1)}{2j(j+1)},\qquad
+                \Delta E_Z=\mu_B g_j m_j B.
+              \]
+              <p>
+                Fine structure depends on \(j\), while the weak-field Zeeman shift resolves the \(m_j\) degeneracy.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 44</span>
+                <h3>Hyperfine coupling</h3>
+                <p>
+                  The nucleus has angular momentum too. Hyperfine structure couples nuclear spin \(I\) to the
+                  electron's total angular momentum \(J\), producing total \(F=I+J\) multiplets and the famous
+                  hydrogen \(21\text{ cm}\) transition when \(I=J=\tfrac12\).
+                </p>
+              </div>
+              <canvas id="hyperfine-canvas" width="900" height="560" role="img" aria-label="Hyperfine coupling and weak-field splitting visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Nuclear spin 2I
+                  <input id="hyperfine-i" type="range" min="1" max="5" step="1" value="1" />
+                </label>
+                <label>
+                  Electron angular 2J
+                  <input id="hyperfine-j" type="range" min="1" max="5" step="2" value="1" />
+                </label>
+                <label>
+                  Hyperfine constant A/h
+                  <input id="hyperfine-a" type="range" min="80" max="1800" value="1420" />
+                </label>
+                <label>
+                  Selected 2F
+                  <input id="hyperfine-f" type="range" min="0" max="2" step="2" value="2" />
+                </label>
+                <label>
+                  Selected 2m_F
+                  <input id="hyperfine-mf" type="range" min="-2" max="2" step="2" value="0" />
+                </label>
+                <label>
+                  Weak field B
+                  <input id="hyperfine-b" type="range" min="0" max="40" value="8" />
+                </label>
+                <output id="hyperfine-readout" for="hyperfine-i hyperfine-j hyperfine-a hyperfine-f hyperfine-mf hyperfine-b">Hyperfine readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat H_{\mathrm{hf}}=A\,\hat{\mathbf I}\cdot\hat{\mathbf J}
+                =\frac{A}{2}\left(\hat F^2-\hat I^2-\hat J^2\right),
+                \qquad \hat{\mathbf F}=\hat{\mathbf I}+\hat{\mathbf J}.
+              \]
+              \[
+                F=|I-J|, |I-J|+1,\ldots,I+J,
+                \qquad
+                E_F=\frac{A}{2}\left[F(F+1)-I(I+1)-J(J+1)\right].
+              \]
+              \[
+                \Delta E_{F,m_F}\simeq g_F\mu_B m_F B,
+                \qquad m_F=-F,-F+1,\ldots,F.
+              \]
+              <p>
+                Hyperfine spectroscopy is a precision probe: the ground-state hydrogen \(F=1\to F=0\) splitting is
+                the radio line used to map neutral hydrogen in astronomy.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 45</span>
+                <h3>Adiabatic following and Berry phase</h3>
+                <p>
+                  If the Hamiltonian changes slowly compared with the energy gap, a state that starts in one
+                  instantaneous eigenstate mostly stays there. Move around a closed loop and the state also picks
+                  up a geometric phase set by the loop on the Bloch sphere.
+                </p>
+              </div>
+              <canvas id="adiabatic-canvas" width="900" height="540" role="img" aria-label="Adiabatic theorem and Berry phase visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Sweep speed
+                  <input id="adiabatic-speed" type="range" min="5" max="120" value="34" />
+                </label>
+                <label>
+                  Energy gap
+                  <input id="adiabatic-gap" type="range" min="30" max="180" value="100" />
+                </label>
+                <label>
+                  Loop cone angle
+                  <input id="adiabatic-cone" type="range" min="10" max="80" value="42" />
+                </label>
+                <output id="adiabatic-readout" for="adiabatic-speed adiabatic-gap adiabatic-cone">Adiabatic readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |\psi(0)\rangle=|n(0)\rangle
+                \quad \Longrightarrow \quad
+                |\psi(t)\rangle\approx e^{i\theta_n(t)}e^{i\gamma_n(t)}|n(t)\rangle.
+              \]
+              \[
+                \left|\frac{\langle m|\dot H|n\rangle}{(E_m-E_n)^2}\right|\ll\frac{1}{\hbar}
+                \quad (m\ne n).
+              \]
+              \[
+                \gamma_n=i\int \langle n(R)|\nabla_R n(R)\rangle\cdot dR.
+              \]
+              \[
+                \gamma_\pm=\mp\frac{\Omega_{\mathrm{solid}}}{2}
+                \quad \text{for spin-\(\tfrac12\) around a closed cone.}
+              \]
+              <p>
+                The dynamical phase depends on elapsed time and energy; the Berry phase depends only on the path in
+                parameter space.
+              </p>
+            </div>
+          </section>
+
+          <section id="chapter-guide" class="section-block">
+            <p class="kicker">16. Chapter-level study guide</p>
+            <h2>Each topic should end with a derivation you can reproduce.</h2>
+            <p>
+              A deep quantum mechanics course is learned by rebuilding the machinery yourself. The guide below is
+              the current project backlog for turning this article into a full study text: every chapter has a
+              conceptual target, a mathematical derivation target, and a problem ladder.
+            </p>
+
+            <div class="chapter-guide">
+              <details open>
+                <summary>
+                  <span>01</span>
+                  <strong>Wave mechanics and probability</strong>
+                  <em>From \(\Psi\) to measurable distributions</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Build the interpretation of \(|\Psi(x,t)|^2\), normalization, expectation values, and the
+                    continuity equation:
+                    \[
+                      \frac{\partial \rho}{\partial t}+\frac{\partial j}{\partial x}=0
+                    \]
+                    \[
+                      j=\frac{\hbar}{2mi}\left(\Psi^*\frac{\partial\Psi}{\partial x}
+                      -\Psi\frac{\partial\Psi^*}{\partial x}\right).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Derive conservation of total probability from the Schrodinger equation.</li>
+                    <li>Compute \(\langle x\rangle\), \(\langle p\rangle\), \(\Delta x\), and \(\Delta p\) for a Gaussian.</li>
+                    <li>Explain why global phase is unobservable but relative phase is physical.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>02</span>
+                  <strong>Stationary states and one-dimensional wells</strong>
+                  <em>Boundary conditions create spectra</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Separate variables with \(\Psi(x,t)=\psi(x)e^{-iEt/\hbar}\), solve
+                    \(\hat H\psi=E\psi\), and connect allowed energies to normalizable eigenfunctions.
+                  </p>
+                  <ul>
+                    <li>Derive the infinite-well spectrum and prove orthonormality.</li>
+                    <li>Match \(\psi\) and \(d\psi/dx\) across finite potential steps.</li>
+                    <li>Compare bound states, continuum states, and resonance-like behavior.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>03</span>
+                  <strong>Operators, Hilbert space, and uncertainty</strong>
+                  <em>The algebra behind measurement</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Translate wave mechanics into vector spaces. Observables become Hermitian operators, and
+                    incompatible observables satisfy nonzero commutators:
+                    \[
+                      \Delta A\,\Delta B \ge \frac12|\langle[\hat A,\hat B]\rangle|.
+                    \]
+                  </p>
+                  <ul>
+                    <li>Show that Hermitian operators have real eigenvalues.</li>
+                    <li>Derive \([\hat x,\hat p]=i\hbar\) and the Heisenberg uncertainty relation.</li>
+                    <li>Use basis changes to compute probabilities in a non-position basis.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>04</span>
+                  <strong>Harmonic oscillator</strong>
+                  <em>The first algebraic solution</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Factor the Hamiltonian into ladder operators:
+                    \[
+                      \hat a=\sqrt{\frac{m\omega}{2\hbar}}\left(\hat x+\frac{i}{m\omega}\hat p\right),
+                      \qquad
+                      \hat H=\hbar\omega\left(\hat a^\dagger\hat a+\frac12\right).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Prove that energy spacing is uniform and the ground energy is not zero.</li>
+                    <li>Construct \(\psi_0(x)\) from \(\hat a\psi_0=0\).</li>
+                    <li>Connect coherent states to classical oscillation.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>05</span>
+                  <strong>Three dimensions and hydrogen</strong>
+                  <em>Symmetry separates the problem</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    In a central potential, separation in spherical coordinates produces radial functions and
+                    spherical harmonics:
+                    \[
+                      \Psi(r,\theta,\phi)=R_{n\ell}(r)Y_\ell^m(\theta,\phi).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Identify degeneracy from rotational symmetry.</li>
+                    <li>Interpret quantum numbers \(n\), \(\ell\), and \(m\).</li>
+                    <li>Sketch radial probability \(r^2|R_{n\ell}(r)|^2\) for low-lying states.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>06</span>
+                  <strong>Spin, angular momentum, and addition</strong>
+                  <em>Discrete directions from noncommuting generators</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Angular momentum is governed by
+                    \[
+                      [\hat J_i,\hat J_j]=i\hbar\epsilon_{ijk}\hat J_k,
+                      \qquad
+                      \hat J_\pm|j,m\rangle=\hbar\sqrt{j(j+1)-m(m\pm1)}|j,m\pm1\rangle.
+                    \]
+                  </p>
+                  <ul>
+                    <li>Derive allowed \(m\) values using ladder operators.</li>
+                    <li>Represent spin-\(\tfrac12\) states with Pauli matrices.</li>
+                    <li>Use Clebsch-Gordan logic to combine two spins.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>07</span>
+                  <strong>Approximation methods</strong>
+                  <em>How real systems become calculable</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Perturbation theory, the variational principle, and WKB each preserve a different structure:
+                    algebraic corrections, energy bounds, and semiclassical phase.
+                  </p>
+                  <ul>
+                    <li>Compute first-order corrections for a weak anharmonic perturbation.</li>
+                    <li>Diagonalize a two-state perturbation matrix when unperturbed states are degenerate.</li>
+                    <li>Use a variational Gaussian to estimate a ground-state energy.</li>
+                    <li>Apply WKB quantization \(\int_{x_1}^{x_2}p(x)\,dx=(n+\tfrac12)\pi\hbar\).</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>08</span>
+                  <strong>Scattering, identical particles, and transitions</strong>
+                  <em>From bound spectra to experiments</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Scattering amplitudes, exchange symmetry, and time-dependent perturbations connect the formal
+                    machinery to cross sections, atomic structure, and transition rates:
+                    \[
+                      \Gamma_{i\to f}=\frac{2\pi}{\hbar}|\langle f|\hat H'|i\rangle|^2\rho(E_f).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Relate \(f(\theta)\) to \(d\sigma/d\Omega\).</li>
+                    <li>Compute \(\sigma_{\mathrm{tot}}\) from partial-wave phase shifts.</li>
+                    <li>Build symmetric and antisymmetric two-particle states.</li>
+                    <li>Use selection rules to decide which transitions are allowed.</li>
+                  </ul>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section id="study-path" class="section-block">
+            <p class="kicker">17. Study path</p>
+            <h2>A deep pass means reading, manipulating, and deriving.</h2>
+            <p>
+              Use the article as a spiral rather than a straight line. Each pass should end with a calculation you can
+              reproduce and a figure whose limiting cases you can predict before touching the slider.
+            </p>
+
+            <div class="curriculum-grid">
+              <section class="topic-card">
+                <span>01</span>
+                <h3>Amplitudes before formalism</h3>
+                <p>Read amplitudes, interference, qubits, and measurement. Derive \(P(k)=|\langle k|\psi\rangle|^2\).</p>
+              </section>
+              <section class="topic-card">
+                <span>02</span>
+                <h3>Postulates as working rules</h3>
+                <p>Practice expectation values, projectors, commutators, and \(\Delta A\,\Delta B\) bounds.</p>
+              </section>
+              <section class="topic-card">
+                <span>03</span>
+                <h3>Exact systems</h3>
+                <p>Move from wells and tunneling to oscillator ladders, hydrogen separation, and spherical harmonics.</p>
+              </section>
+              <section class="topic-card">
+                <span>04</span>
+                <h3>Spin and exchange</h3>
+                <p>Use angular momentum algebra, spin coupling, and \(\hat P_{12}\Psi=\pm\Psi\) to explain exclusion.</p>
+              </section>
+              <section class="topic-card">
+                <span>05</span>
+                <h3>Approximation methods</h3>
+                <p>Compare perturbation theory, degenerate mixing, variational bounds, Stark splitting, and WKB.</p>
+              </section>
+              <section class="topic-card">
+                <span>06</span>
+                <h3>Scattering and transitions</h3>
+                <p>Connect \(d\sigma/d\Omega=|f(\theta)|^2\), Fermi's golden rule, and selection rules to experiments.</p>
+              </section>
+            </div>
+
+            <div class="chapter-callout">
+              <h3>How to use the clips</h3>
+              <p>
+                After each pass, watch the matching Manim scenes below and explain what the animation is preserving:
+                probability, phase, symmetry, energy, angular momentum, or flux.
+              </p>
+            </div>
+          </section>
+
+          <section id="problems" class="section-block">
+            <p class="kicker">18. Practice problems</p>
+            <h2>The fastest check is whether you can derive the next line.</h2>
+            <p>
+              The full problem set lives in <code>PROBLEM_SET.md</code>. These six representative prompts match the
+              study passes above and are designed to be solved with the nearby interactive figures open.
+            </p>
+
+            <div class="derivation-grid">
+              <section class="derivation-card">
+                <h3>Interference term</h3>
+                <p>
+                  For \( |\psi\rangle=(|a\rangle+e^{i\phi}|b\rangle)/\sqrt2 \), derive
+                  \(P(x)=|A_a(x)+e^{i\phi}A_b(x)|^2/2\) and identify the phase-dependent term.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Projection update</h3>
+                <p>
+                  Given \(P_a+P_b=I\), show why outcome \(a\) sends
+                  \( |\psi\rangle \) to \(P_a|\psi\rangle/\sqrt{\langle\psi|P_a|\psi\rangle}\).
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Stationary states</h3>
+                <p>
+                  Solve the infinite square well on \(0\lt x\lt L\), normalize the eigenfunctions, and prove
+                  orthogonality for two different quantum numbers.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Spin and exchange</h3>
+                <p>
+                  Build symmetric and antisymmetric two-particle states from
+                  \(\phi_a(x_1)\phi_b(x_2)\) and \(\phi_b(x_1)\phi_a(x_2)\), then evaluate the case \(a=b\).
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Approximation test</h3>
+                <p>
+                  Starting from \(\hat H=\hat H_0+\lambda\hat H'\), derive
+                  \(E_n^{(1)}=\langle n^{(0)}|\hat H'|n^{(0)}\rangle\) for a nondegenerate level.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Transition rate</h3>
+                <p>
+                  Explain why Fermi's golden rule contains both
+                  \(|\langle f|\hat H'|i\rangle|^2\) and a density of final states \(\rho(E_f)\).
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="manim" class="section-block">
+            <p class="kicker">19. Rendered explanations</p>
+            <h2>Manim scenes turn the same ideas into reusable video clips.</h2>
+            <p>
+              The project includes ManimGL source for forty-one explanatory scenes: a wave packet, momentum-space Fourier transform, translation generator, Robertson uncertainty, probability current and continuity, double-slit
+              interference, qubit measurement, projection measurement, spectral theorem for observables, basis changes and matrix representations, completeness relation, commutators and compatible observables, unitary time evolution, Schrodinger and Heisenberg pictures, Ehrenfest conservation, free-particle dispersion, orthogonality of stationary states, finite square well, parity symmetry, delta-potential bound states and scattering, spectral expansion, harmonic oscillator, hydrogen radial
+              probability, spherical harmonics, spin angular momentum, spin coupling, identical-particle exchange, time-independent perturbation theory,
+              degenerate perturbation theory, the Stark effect, variational approximation, WKB, Born scattering,
+              Coulomb/Rutherford scattering, partial-wave scattering, the optical theorem, time-dependent transitions, electric-dipole selection rules, fine-structure Zeeman
+              splitting, hyperfine coupling, and adiabatic Berry phase.
+              When rendered, the clips appear below and can be embedded in later lessons.
+            </p>
+
+            <div class="video-grid">
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/wave_packet.jpg" data-src="./public/media/manim/wave_packet.mp4"></video>
+                <figcaption>
+                  <span>Wave packet</span>
+                  <code>WavePacketScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/momentum_space.jpg" data-src="./public/media/manim/momentum_space.mp4"></video>
+                <figcaption>
+                  <span>Momentum space</span>
+                  <code>MomentumSpaceScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/translation_generator.jpg" data-src="./public/media/manim/translation_generator.mp4"></video>
+                <figcaption>
+                  <span>Translation generator</span>
+                  <code>TranslationGeneratorScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/probability_current.jpg" data-src="./public/media/manim/probability_current.mp4"></video>
+                <figcaption>
+                  <span>Probability current</span>
+                  <code>ProbabilityCurrentScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/robertson_uncertainty.jpg" data-src="./public/media/manim/robertson_uncertainty.mp4"></video>
+                <figcaption>
+                  <span>Robertson uncertainty</span>
+                  <code>RobertsonUncertaintyScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/double_slit.jpg" data-src="./public/media/manim/double_slit.mp4"></video>
+                <figcaption>
+                  <span>Double slit</span>
+                  <code>DoubleSlitScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/qubit_measurement.jpg" data-src="./public/media/manim/qubit_measurement.mp4"></video>
+                <figcaption>
+                  <span>Qubit measurement</span>
+                  <code>QubitMeasurementScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/projection_measurement.jpg" data-src="./public/media/manim/projection_measurement.mp4"></video>
+                <figcaption>
+                  <span>Projection measurement</span>
+                  <code>ProjectionMeasurementScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spectral_theorem.jpg" data-src="./public/media/manim/spectral_theorem.mp4"></video>
+                <figcaption>
+                  <span>Spectral theorem</span>
+                  <code>SpectralTheoremScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/basis_change.jpg" data-src="./public/media/manim/basis_change.mp4"></video>
+                <figcaption>
+                  <span>Basis changes</span>
+                  <code>BasisChangeScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/completeness_relation.jpg" data-src="./public/media/manim/completeness_relation.mp4"></video>
+                <figcaption>
+                  <span>Completeness relation</span>
+                  <code>CompletenessRelationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/commutator_compatibility.jpg" data-src="./public/media/manim/commutator_compatibility.mp4"></video>
+                <figcaption>
+                  <span>Commutators and compatibility</span>
+                  <code>CommutatorCompatibilityScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/unitary_evolution.jpg" data-src="./public/media/manim/unitary_evolution.mp4"></video>
+                <figcaption>
+                  <span>Unitary time evolution</span>
+                  <code>UnitaryEvolutionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/heisenberg_picture.jpg" data-src="./public/media/manim/heisenberg_picture.mp4"></video>
+                <figcaption>
+                  <span>Schrodinger and Heisenberg pictures</span>
+                  <code>HeisenbergPictureScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/ehrenfest_conservation.jpg" data-src="./public/media/manim/ehrenfest_conservation.mp4"></video>
+                <figcaption>
+                  <span>Ehrenfest conservation</span>
+                  <code>EhrenfestConservationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/free_particle_dispersion.jpg" data-src="./public/media/manim/free_particle_dispersion.mp4"></video>
+                <figcaption>
+                  <span>Free-particle dispersion</span>
+                  <code>FreeParticleDispersionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/orthogonality.jpg" data-src="./public/media/manim/orthogonality.mp4"></video>
+                <figcaption>
+                  <span>Orthogonality</span>
+                  <code>OrthogonalityScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/finite_square_well.jpg" data-src="./public/media/manim/finite_square_well.mp4"></video>
+                <figcaption>
+                  <span>Finite square well</span>
+                  <code>FiniteSquareWellScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/parity_symmetry.jpg" data-src="./public/media/manim/parity_symmetry.mp4"></video>
+                <figcaption>
+                  <span>Parity symmetry</span>
+                  <code>ParitySymmetryScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/delta_potential.jpg" data-src="./public/media/manim/delta_potential.mp4"></video>
+                <figcaption>
+                  <span>Delta potential</span>
+                  <code>DeltaPotentialScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spectral_expansion.jpg" data-src="./public/media/manim/spectral_expansion.mp4"></video>
+                <figcaption>
+                  <span>Spectral expansion</span>
+                  <code>SpectralExpansionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/harmonic_oscillator.jpg" data-src="./public/media/manim/harmonic_oscillator.mp4"></video>
+                <figcaption>
+                  <span>Harmonic oscillator</span>
+                  <code>HarmonicOscillatorScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/hydrogen_radial.jpg" data-src="./public/media/manim/hydrogen_radial.mp4"></video>
+                <figcaption>
+                  <span>Hydrogen radial probability</span>
+                  <code>HydrogenRadialScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spherical_harmonics.jpg" data-src="./public/media/manim/spherical_harmonics.mp4"></video>
+                <figcaption>
+                  <span>Spherical harmonics</span>
+                  <code>SphericalHarmonicsScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spin_angular_momentum.jpg" data-src="./public/media/manim/spin_angular_momentum.mp4"></video>
+                <figcaption>
+                  <span>Spin angular momentum</span>
+                  <code>SpinAngularMomentumScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spin_coupling.jpg" data-src="./public/media/manim/spin_coupling.mp4"></video>
+                <figcaption>
+                  <span>Spin coupling</span>
+                  <code>SpinCouplingScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/identical_particles.jpg" data-src="./public/media/manim/identical_particles.mp4"></video>
+                <figcaption>
+                  <span>Identical particles</span>
+                  <code>IdenticalParticlesScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/time_independent_perturbation.jpg" data-src="./public/media/manim/time_independent_perturbation.mp4"></video>
+                <figcaption>
+                  <span>Time-independent perturbation</span>
+                  <code>TimeIndependentPerturbationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/degenerate_perturbation.jpg" data-src="./public/media/manim/degenerate_perturbation.mp4"></video>
+                <figcaption>
+                  <span>Degenerate perturbation</span>
+                  <code>DegeneratePerturbationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/stark_effect.jpg" data-src="./public/media/manim/stark_effect.mp4"></video>
+                <figcaption>
+                  <span>Stark effect</span>
+                  <code>StarkEffectScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/variational_method.jpg" data-src="./public/media/manim/variational_method.mp4"></video>
+                <figcaption>
+                  <span>Variational method</span>
+                  <code>VariationalMethodScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/wkb_action.jpg" data-src="./public/media/manim/wkb_action.mp4"></video>
+                <figcaption>
+                  <span>WKB action</span>
+                  <code>WKBActionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/scattering_born.jpg" data-src="./public/media/manim/scattering_born.mp4"></video>
+                <figcaption>
+                  <span>Scattering</span>
+                  <code>ScatteringBornScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/rutherford_scattering.jpg" data-src="./public/media/manim/rutherford_scattering.mp4"></video>
+                <figcaption>
+                  <span>Rutherford scattering</span>
+                  <code>RutherfordScatteringScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/partial_wave_scattering.jpg" data-src="./public/media/manim/partial_wave_scattering.mp4"></video>
+                <figcaption>
+                  <span>Partial-wave scattering</span>
+                  <code>PartialWaveScatteringScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/optical_theorem.jpg" data-src="./public/media/manim/optical_theorem.mp4"></video>
+                <figcaption>
+                  <span>Optical theorem</span>
+                  <code>OpticalTheoremScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/rabi_transitions.jpg" data-src="./public/media/manim/rabi_transitions.mp4"></video>
+                <figcaption>
+                  <span>Time-dependent transitions</span>
+                  <code>RabiTransitionsScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/selection_rules.jpg" data-src="./public/media/manim/selection_rules.mp4"></video>
+                <figcaption>
+                  <span>Selection rules</span>
+                  <code>SelectionRulesScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/fine_structure_zeeman.jpg" data-src="./public/media/manim/fine_structure_zeeman.mp4"></video>
+                <figcaption>
+                  <span>Fine structure and Zeeman</span>
+                  <code>FineStructureZeemanScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/hyperfine_coupling.jpg" data-src="./public/media/manim/hyperfine_coupling.mp4"></video>
+                <figcaption>
+                  <span>Hyperfine coupling</span>
+                  <code>HyperfineCouplingScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/adiabatic_berry.jpg" data-src="./public/media/manim/adiabatic_berry.mp4"></video>
+                <figcaption>
+                  <span>Adiabatic Berry phase</span>
+                  <code>AdiabaticBerryScene</code>
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+        </div>
+      </article>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

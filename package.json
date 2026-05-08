@@ -1,0 +1,19 @@
+{
+  "name": "quantum-physics-introduction",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "python3 -m http.server 5173",
+    "render:manim": "bash scripts/render_manim.sh",
+    "audit": "node scripts/audit_project.mjs",
+    "audit:document": "node scripts/verify_document_integrity.mjs",
+    "audit:goal": "REQUIRE_CODEX_BROWSER=1 node scripts/audit_project.mjs",
+    "audit:local": "npm run audit && npm run audit:visual",
+    "audit:syllabus": "node scripts/verify_syllabus_map.mjs",
+    "audit:visual": "HOME=$PWD/output/home NPM_CONFIG_CACHE=$PWD/output/npm-cache node scripts/fallback_visual_smoke.mjs",
+    "status:browser": "node scripts/browser_gate_status.mjs",
+    "wait:browser-card": "node scripts/wait_for_browser_card.mjs",
+    "verify:browser": "npm run wait:browser-card && npm run audit:goal"
+  }
+}

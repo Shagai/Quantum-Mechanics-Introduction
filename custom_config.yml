@@ -1,0 +1,19 @@
+directories:
+  base: "./manim_output"
+  cache: "./.cache/manim"
+  subdirs:
+    output: "videos"
+    raster_images: "raster_images"
+    vector_images: "vector_images"
+    sounds: "sounds"
+    data: "data"
+    downloads: "downloads"
+
+camera:
+  resolution: (854, 480)
+  fps: 15
+  background_color: "#fbfaf7"
+
+scene:
+  show_animation_progress: False
+  leave_progress_bars: False
