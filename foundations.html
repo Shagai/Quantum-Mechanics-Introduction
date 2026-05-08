@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quantum Foundations</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M12 34c10-16 30-16 40 0' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        chtml: {
+          scale: 0.98
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="Quantum Physics introduction home">Quantum Primer</a>
+      <nav class="top-nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./foundations.html" aria-current="page">Foundations</a>
+        <a href="./formalism.html">Formalism</a>
+        <a href="./systems.html">Systems</a>
+        <a href="./spin-particles.html">Spin & particles</a>
+        <a href="./methods.html">Methods</a>
+        <a href="./study.html">Study</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <article class="article-shell">
+        <aside class="toc" aria-label="Page outline">
+          <a href="#amplitudes">Amplitudes</a>
+          <a href="#interference">Interference</a>
+          <a href="#qubit">A qubit</a>
+          <a href="#measurement">Measurement</a>
+          <a href="#uncertainty">Uncertainty</a>
+        </aside>
+
+        <div class="article-flow">
+          <section class="page-intro section-block">
+            <p class="kicker">Page 1</p>
+            <h2>The physical ideas before the full machinery.</h2>
+            <p>This page builds the first mental model: amplitudes carry phase, paths interfere, qubits encode relative direction, measurement samples probabilities, and uncertainty limits jointly sharp descriptions.</p>
+          </section>
+          <section id="amplitudes" class="section-block">
+            <p class="kicker">Foundations 1. The state</p>
+            <h2>Quantum states are not ordinary probability lists.</h2>
+            <p>
+              A quantum state stores amplitudes. An amplitude has a size and a phase. When a measurement is made,
+              the size becomes an ordinary probability through the Born rule:
+              <span class="equation">\(P(\text{outcome})=|\text{amplitude}|^2\)</span>.
+            </p>
+            <p>
+              The phase is invisible if there is only one path. It matters when two or more paths can meet. Then
+              amplitudes add before we square them, so phases can strengthen or cancel each other.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 1</span>
+                <h3>A wavefunction as moving amplitude</h3>
+                <p>
+                  Narrowing the packet makes the particle feel more localized. The cost is less certainty about
+                  its momentum, which appears later in the uncertainty section.
+                </p>
+              </div>
+              <canvas id="packet-canvas" width="900" height="420" role="img" aria-label="Animated wave packet"></canvas>
+              <div class="controls">
+                <label>
+                  Packet width
+                  <input id="packet-width" type="range" min="18" max="92" value="54" />
+                </label>
+                <output id="packet-width-value" for="packet-width">54</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 2</span>
+                <h3>Position space and momentum space are Fourier partners</h3>
+                <p>
+                  A localized Gaussian packet can be described either by \(\psi(x)\) or by its momentum-space
+                  amplitude \(\phi(p)\). Narrowing the packet in \(x\) broadens the possible momenta, while the
+                  carrier wave sets the average momentum.
+                </p>
+              </div>
+              <canvas id="momentum-canvas" width="900" height="540" role="img" aria-label="Position-space wavefunction and momentum-space Fourier transform"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Position spread sigma x
+                  <input id="momentum-sigma" type="range" min="20" max="120" value="62" />
+                </label>
+                <label>
+                  Mean wave number k0
+                  <input id="momentum-k0" type="range" min="-90" max="90" value="36" />
+                </label>
+                <output id="momentum-readout" for="momentum-sigma momentum-k0">Momentum-space readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \phi(p)=\frac{1}{\sqrt{2\pi\hbar}}\int_{-\infty}^{\infty}\psi(x)e^{-ipx/\hbar}\,dx,
+                \qquad
+                \psi(x)=\frac{1}{\sqrt{2\pi\hbar}}\int_{-\infty}^{\infty}\phi(p)e^{ipx/\hbar}\,dp.
+              \]
+              \[
+                P(x)\,dx=|\psi(x)|^2dx,\qquad P(p)\,dp=|\phi(p)|^2dp,\qquad
+                \langle p\rangle=\int \phi^*(p)p\phi(p)\,dp.
+              \]
+              <p>
+                The uncertainty relation is a Fourier fact with physical consequences: a narrow packet needs
+                many momentum components, while a nearly single-momentum state must spread across space.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 3</span>
+                <h3>Momentum is the generator of translations</h3>
+                <p>
+                  In position space, the momentum operator differentiates the wavefunction. Exponentiating it
+                  creates a translation operator: shifting the packet by \(a\) is the same operation as applying
+                  \(e^{-ia\hat p/\hbar}\).
+                </p>
+              </div>
+              <canvas id="translation-canvas" width="900" height="560" role="img" aria-label="Momentum operator as generator of spatial translations"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Translation a
+                  <input id="translation-shift" type="range" min="-120" max="120" value="46" />
+                </label>
+                <label>
+                  Wave number k
+                  <input id="translation-k" type="range" min="-90" max="90" value="44" />
+                </label>
+                <label>
+                  Packet width
+                  <input id="translation-width" type="range" min="35" max="120" value="70" />
+                </label>
+                <output id="translation-readout" for="translation-shift translation-k translation-width">Translation generator readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat p=-i\hbar\frac{\partial}{\partial x},\qquad
+                \hat T(a)=e^{-ia\hat p/\hbar},\qquad
+                (\hat T(a)\psi)(x)=\psi(x-a).
+              \]
+              \[
+                [\hat x,\hat p]\psi
+                =\hat x(-i\hbar\partial_x\psi)
+                +i\hbar\partial_x(x\psi)
+                =i\hbar\psi.
+              \]
+              <p>
+                This is why the canonical commutator is not arbitrary notation: it encodes how positions change
+                under infinitesimal translations.
+              </p>
+            </div>
+          </section>
+
+          <section id="interference" class="section-block">
+            <p class="kicker">Foundations 2. The experiment</p>
+            <h2>The double slit is phase bookkeeping made visible.</h2>
+            <p>
+              If a particle can reach a detector through two indistinguishable paths, the amplitudes from both
+              paths are added first. Where phases line up, detection is likely. Where they oppose, detection is
+              unlikely.
+            </p>
+            <p>
+              This is why the pattern is not the sum of two classical shadows. It is a probability distribution
+              created by amplitude addition.
+            </p>
+
+            <figure class="interactive-panel">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 4</span>
+                <h3>Two paths, one screen</h3>
+                <p>
+                  The bright bands are places where both paths arrive nearly in phase. Larger slit spacing makes
+                  the pattern tighter.
+                </p>
+              </div>
+              <canvas id="slit-canvas" width="900" height="520" role="img" aria-label="Double slit interference"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Wavelength
+                  <input id="wavelength" type="range" min="34" max="92" value="58" />
+                </label>
+                <label>
+                  Slit spacing
+                  <input id="slit-spacing" type="range" min="34" max="124" value="74" />
+                </label>
+              </div>
+            </figure>
+
+          </section>
+
+          <section id="qubit" class="section-block">
+            <p class="kicker">Foundations 3. The smallest example</p>
+            <h2>A qubit is a point of direction, not a coin waiting to land.</h2>
+            <p>
+              A classical bit is either 0 or 1. A qubit can be in a superposition
+              <span class="equation">\(|\psi\rangle=\cos(\theta/2)|0\rangle+e^{i\phi}\sin(\theta/2)|1\rangle\)</span>.
+              The angle theta controls the measurement probabilities in the 0 and 1 basis. The angle phi is a
+              relative phase that becomes visible in other measurement bases.
+            </p>
+
+            <figure class="interactive-panel split-panel">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 5</span>
+                <h3>The Bloch sphere view</h3>
+                <p>
+                  The north pole is |0&gt;, the south pole is |1&gt;, and points between them are coherent
+                  superpositions.
+                </p>
+              </div>
+              <canvas id="bloch-canvas" width="640" height="520" role="img" aria-label="Bloch sphere qubit visualization"></canvas>
+              <div class="controls stacked">
+                <label>
+                  theta
+                  <input id="theta" type="range" min="0" max="180" value="68" />
+                </label>
+                <label>
+                  phi
+                  <input id="phi" type="range" min="0" max="360" value="36" />
+                </label>
+                <output id="state-readout" aria-live="polite">state readout</output>
+              </div>
+            </figure>
+          </section>
+
+          <section id="measurement" class="section-block">
+            <p class="kicker">Foundations 4. The update</p>
+            <h2>Measurement turns amplitude into sampled fact.</h2>
+            <p>
+              Quantum mechanics predicts probabilities for outcomes, not a hidden list of prewritten answers.
+              Repeating the same preparation many times reveals the probability distribution.
+            </p>
+
+            <figure class="interactive-panel split-panel">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 6</span>
+                <h3>Repeated measurements</h3>
+                <p>
+                  Each dot is one preparation and one measurement. The bars approach the Born-rule probabilities
+                  as the number of trials grows.
+                </p>
+              </div>
+              <canvas id="measurement-canvas" width="680" height="460" role="img" aria-label="Measurement histogram simulation"></canvas>
+              <div class="controls stacked">
+                <label>
+                  P(0)
+                  <input id="prob-zero" type="range" min="5" max="95" value="72" />
+                </label>
+                <div class="button-row">
+                  <button id="one-shot" type="button">One shot</button>
+                  <button id="many-shots" type="button">Run 64</button>
+                  <button id="reset-shots" type="button" class="secondary">Reset</button>
+                </div>
+                <output id="shot-readout" aria-live="polite">0 trials</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 7</span>
+                <h3>Projection operators describe measurement update</h3>
+                <p>
+                  A measurement with a degenerate outcome does not have to choose a single basis vector. It
+                  projects the state onto the whole eigenspace for that outcome, then renormalizes what remains.
+                </p>
+              </div>
+              <canvas id="projection-canvas" width="900" height="560" role="img" aria-label="Projection operator measurement update with a degenerate eigenspace"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Probability of degenerate outcome
+                  <input id="projection-weight" type="range" min="5" max="95" value="68" />
+                </label>
+                <label>
+                  Mix inside eigenspace
+                  <input id="projection-mix" type="range" min="0" max="100" value="58" />
+                </label>
+                <label>
+                  Relative phase
+                  <input id="projection-phase" type="range" min="-180" max="180" value="42" />
+                </label>
+                <output id="projection-readout" for="projection-weight projection-mix projection-phase">Projection measurement readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat P_a=\sum_{\mu}|a,\mu\rangle\langle a,\mu|,\qquad
+                p(a)=\langle\psi|\hat P_a|\psi\rangle.
+              \]
+              \[
+                |\psi\rangle\longrightarrow
+                \frac{\hat P_a|\psi\rangle}{\sqrt{\langle\psi|\hat P_a|\psi\rangle}},
+                \qquad
+                \hat P_a\hat P_b=\delta_{ab}\hat P_a,\quad \sum_a\hat P_a=I.
+              \]
+              <p>
+                The probability is the length squared of the projected component. For a degenerate eigenspace,
+                the relative amplitudes inside that subspace survive the measurement.
+              </p>
+            </div>
+          </section>
+
+          <section id="uncertainty" class="section-block">
+            <p class="kicker">Foundations 5. The constraint</p>
+            <h2>Uncertainty is a limit on jointly sharp descriptions.</h2>
+            <p>
+              A localized wave packet is built from many momentum components. A broad packet can be made from a
+              narrower range of momenta. That tradeoff is the content of the uncertainty principle:
+              <span class="equation">\( \Delta x\,\Delta p \ge \hbar/2 \)</span>.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 8</span>
+                <h3>Position width versus momentum width</h3>
+                <p>
+                  The top plot is position space. The bottom plot is momentum space. Making one curve narrow
+                  makes the other curve broad.
+                </p>
+              </div>
+              <canvas id="uncertainty-canvas" width="900" height="500" role="img" aria-label="Uncertainty principle wave packet"></canvas>
+              <div class="controls">
+                <label>
+                  Position spread
+                  <input id="spread" type="range" min="20" max="120" value="62" />
+                </label>
+                <output id="uncertainty-readout" for="spread">Delta x Delta p is constrained</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 9</span>
+                <h3>Robertson uncertainty is the commutator theorem</h3>
+                <p>
+                  Fourier uncertainty is one example. In general, two observables cannot both be sharp in a
+                  state when their commutator has a nonzero expectation value. Rotate the second spin observable
+                  and change the state phase to see the lower bound move.
+                </p>
+              </div>
+              <canvas id="robertson-canvas" width="900" height="560" role="img" aria-label="Robertson uncertainty relation for two spin observables"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Observable angle alpha
+                  <input id="robertson-angle" type="range" min="0" max="180" value="72" />
+                </label>
+                <label>
+                  State polar theta
+                  <input id="robertson-theta" type="range" min="0" max="180" value="68" />
+                </label>
+                <label>
+                  State phase phi
+                  <input id="robertson-phi" type="range" min="-180" max="180" value="74" />
+                </label>
+                <output id="robertson-readout" for="robertson-angle robertson-theta robertson-phi">Robertson uncertainty readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \Delta A=\sqrt{\langle A^2\rangle-\langle A\rangle^2},\qquad
+                \Delta B=\sqrt{\langle B^2\rangle-\langle B\rangle^2}.
+              \]
+              \[
+                \Delta A\,\Delta B\geq \frac{1}{2}\left|\langle[\hat A,\hat B]\rangle\right|.
+              \]
+              \[
+                A=\sigma_z,\qquad B(\alpha)=\cos\alpha\,\sigma_z+\sin\alpha\,\sigma_x,\qquad
+                \frac{1}{2}|\langle[A,B]\rangle|=|\sin\alpha\,\langle\sigma_y\rangle|.
+              \]
+              <p>
+                The inequality is a statement about a prepared state, not about bad instruments. It comes from
+                Cauchy-Schwarz applied to the vectors \((A-\langle A\rangle)|\psi\rangle\) and
+                \((B-\langle B\rangle)|\psi\rangle\).
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 10</span>
+                <h3>Probability current is local conservation</h3>
+                <p>
+                  Probability can move through space even though the total probability remains one. The current
+                  \(j(x,t)\) measures flow through a point; a region gains probability when more current enters
+                  than leaves.
+                </p>
+              </div>
+              <canvas id="current-canvas" width="900" height="540" role="img" aria-label="Probability current and continuity equation visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Phase gradient k
+                  <input id="current-k" type="range" min="-100" max="100" value="46" />
+                </label>
+                <label>
+                  Packet width
+                  <input id="current-width" type="range" min="28" max="115" value="58" />
+                </label>
+                <output id="current-readout" for="current-k current-width">Probability current readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \rho(x,t)=|\Psi(x,t)|^2,\qquad
+                j(x,t)=\frac{\hbar}{m}\operatorname{Im}\!\left(\Psi^*\frac{\partial\Psi}{\partial x}\right).
+              \]
+              \[
+                \frac{\partial\rho}{\partial t}+\frac{\partial j}{\partial x}=0,\qquad
+                \frac{d}{dt}\int_a^b \rho(x,t)\,dx=j(a,t)-j(b,t).
+              \]
+              <p>
+                This is the local version of normalization. The Schrödinger equation does not merely preserve
+                total probability; it says where probability flows.
+              </p>
+            </div>
+          </section>
+          <nav class="page-footer-nav" aria-label="Page navigation">
+            <a class="previous" href="./index.html"><span>Previous</span>Course map</a>
+            <a class="next" href="./formalism.html"><span>Next</span>Continue to formalism</a>
+          </nav>
+        </div>
+      </article>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

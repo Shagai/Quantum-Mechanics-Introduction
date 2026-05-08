@@ -3,10 +3,10 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { isCodexBrowserVerified, readCodexBrowserCard, readCodexBrowserProof } from "./browser_gate_helpers.mjs";
+import { combineHtml, readHtmlPages } from "./html_pages.mjs";
 
 const root = process.cwd();
 const outDir = path.join(root, "output", "playwright");
-const htmlPath = path.join(root, "index.html");
 const jsPath = path.join(root, "src", "main.js");
 const manimPath = path.join(root, "manim", "quantum_scenes.py");
 const syllabusPath = path.join(root, "SYLLABUS_MAP.md");
@@ -15,14 +15,15 @@ const problemSetPath = path.join(root, "PROBLEM_SET.md");
 const url = process.env.AUDIT_URL || "http://localhost:5173";
 const requireCodexBrowser = process.env.REQUIRE_CODEX_BROWSER === "1";
 
-const html = readFileSync(htmlPath, "utf8");
+const htmlPages = readHtmlPages(root);
+const html = combineHtml(htmlPages);
 const js = readFileSync(jsPath, "utf8");
 const manim = readFileSync(manimPath, "utf8");
 const syllabus = readFileSync(syllabusPath, "utf8");
 const studyPath = readFileSync(studyPathPath, "utf8");
 const problemSet = readFileSync(problemSetPath, "utf8");
 
-const mediaRefs = [...html.matchAll(/(?:data-src|poster)="\.\/([^"]+)"/g)].map((match) => match[1]);
+const mediaRefs = [...new Set([...html.matchAll(/(?:data-src|poster)="\.\/([^"]+)"/g)].map((match) => match[1]))];
 const missingMedia = mediaRefs.filter((relativePath) => !existsSync(path.join(root, relativePath)));
 const mp4Refs = mediaRefs.filter((relativePath) => relativePath.endsWith(".mp4"));
 const jpgRefs = mediaRefs.filter((relativePath) => relativePath.endsWith(".jpg"));
@@ -30,31 +31,47 @@ const sceneClasses = [...manim.matchAll(/^class\s+(\w+Scene)\(/gm)].map((match) 
 const inlineFormulaCount = [...html.matchAll(/\\\([\s\S]*?\\\)/g)].length;
 const displayFormulaCount = [...html.matchAll(/\\\[[\s\S]*?\\\]/g)].length;
 const math = {
-  ok: html.includes("window.MathJax") && inlineFormulaCount + displayFormulaCount >= 50,
-  hasMathJaxConfig: html.includes("window.MathJax"),
+  ok: htmlPages.every((page) => page.html.includes("window.MathJax")) && inlineFormulaCount + displayFormulaCount >= 50,
+  hasMathJaxConfig: htmlPages.every((page) => page.html.includes("window.MathJax")),
   inlineFormulaCount,
   displayFormulaCount,
   totalFormulaCount: inlineFormulaCount + displayFormulaCount,
   minimumFormulaCount: 50,
 };
 const scriptCanvasIds = new Set([...js.matchAll(/#([a-z0-9-]+-canvas|hero-wave)/gi)].map((match) => match[1]));
-const htmlCanvasIds = [...html.matchAll(/<canvas[^>]+id="([^"]+)"/g)].map((match) => match[1]);
+const htmlCanvasIds = [...new Set([...html.matchAll(/<canvas[^>]+id="([^"]+)"/g)].map((match) => match[1]))];
 const canvasesMissingJs = htmlCanvasIds.filter((id) => !scriptCanvasIds.has(id));
-const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-const idCounts = ids.reduce((counts, id) => counts.set(id, (counts.get(id) ?? 0) + 1), new Map());
-const duplicateIds = [...idCounts.entries()].filter(([, count]) => count > 1).map(([id]) => id);
-const hashLinks = [...new Set([...html.matchAll(/\bhref="#([^"]+)"/g)].map((match) => match[1]))];
-const brokenHashLinks = hashLinks.filter((id) => !idCounts.has(id));
-const canvasA11yIssues = [...html.matchAll(/<canvas\b[^>]*>/g)]
-  .map((match) => match[0])
-  .filter((tag) => !/\brole="img"/.test(tag) || !/\baria-label="[^"]+"/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag));
-const videoCardIssues = [...html.matchAll(/<figure class="video-card" data-video-card>[\s\S]*?<\/figure>/g)]
-  .map((match) => match[0])
-  .filter((card) => !/<video\b/.test(card) || !/\bdata-src="\.\/public\/media\/manim\/[^"]+\.mp4"/.test(card) || !/<figcaption>[\s\S]*?<code>[^<]+Scene<\/code>[\s\S]*?<\/figcaption>/.test(card));
+const pageIntegrityChecks = htmlPages.map((page) => {
+  const ids = [...page.html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+  const idCounts = ids.reduce((counts, id) => counts.set(id, (counts.get(id) ?? 0) + 1), new Map());
+  const duplicateIds = [...idCounts.entries()].filter(([, count]) => count > 1).map(([id]) => `${page.file}#${id}`);
+  const hashLinks = [...new Set([...page.html.matchAll(/\bhref="#([^"]+)"/g)].map((match) => match[1]))];
+  const brokenHashLinks = hashLinks.filter((id) => !idCounts.has(id)).map((id) => `${page.file}#${id}`);
+  const canvasA11yIssues = [...page.html.matchAll(/<canvas\b[^>]*>/g)]
+    .map((match) => match[0])
+    .filter((tag) => !/\brole="img"/.test(tag) || !/\baria-label="[^"]+"/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag));
+  const videoCardIssues = [...page.html.matchAll(/<figure class="video-card" data-video-card>[\s\S]*?<\/figure>/g)]
+    .map((match) => match[0])
+    .filter((card) => !/<video\b/.test(card) || !/\bdata-src="\.\/public\/media\/manim\/[^"]+\.mp4"/.test(card) || !/<figcaption>[\s\S]*?<code>[^<]+Scene<\/code>[\s\S]*?<\/figcaption>/.test(card));
+  return {
+    file: page.file,
+    ids,
+    hashLinks,
+    duplicateIds,
+    brokenHashLinks,
+    canvasA11yIssues,
+    videoCardIssues,
+  };
+});
+const duplicateIds = pageIntegrityChecks.flatMap((check) => check.duplicateIds);
+const brokenHashLinks = pageIntegrityChecks.flatMap((check) => check.brokenHashLinks);
+const canvasA11yIssues = pageIntegrityChecks.flatMap((check) => check.canvasA11yIssues);
+const videoCardIssues = pageIntegrityChecks.flatMap((check) => check.videoCardIssues);
 const documentIntegrity = {
   ok: duplicateIds.length === 0 && brokenHashLinks.length === 0 && canvasA11yIssues.length === 0 && videoCardIssues.length === 0,
-  checkedIds: ids.length,
-  checkedHashLinks: hashLinks.length,
+  checkedPages: htmlPages.map((page) => page.file),
+  checkedIds: pageIntegrityChecks.reduce((sum, check) => sum + check.ids.length, 0),
+  checkedHashLinks: pageIntegrityChecks.reduce((sum, check) => sum + check.hashLinks.length, 0),
   checkedCanvases: htmlCanvasIds.length,
   checkedVideoCards: (html.match(/data-video-card/g) ?? []).length,
   duplicateIds,
@@ -170,6 +187,7 @@ const goalGate = {
 const result = {
   server,
   counts: {
+    htmlPages: htmlPages.map((page) => page.file),
     interactivePanels: (html.match(/class="interactive-panel/g) ?? []).length,
     canvases: htmlCanvasIds.length,
     videos: (html.match(/<video/g) ?? []).length,

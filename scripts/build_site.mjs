@@ -1,11 +1,13 @@
 import { existsSync } from "node:fs";
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { getHtmlPageNames } from "./html_pages.mjs";
 
 const root = process.cwd();
 const dist = path.join(root, "dist");
 
-const entries = ["index.html", "styles.css", "src", "public"];
+const entries = ["styles.css", "src", "public"];
+const htmlEntries = getHtmlPageNames(root);
 const generatedMediaDir = path.join(root, "public", "media", "manim");
 
 if (!existsSync(generatedMediaDir)) {
@@ -20,6 +22,12 @@ await mkdir(dist, { recursive: true });
 for (const entry of entries) {
   await cp(path.join(root, entry), path.join(dist, entry), {
     recursive: true,
+    preserveTimestamps: true,
+  });
+}
+
+for (const entry of htmlEntries) {
+  await cp(path.join(root, entry), path.join(dist, entry), {
     preserveTimestamps: true,
   });
 }

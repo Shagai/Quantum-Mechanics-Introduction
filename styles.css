@@ -90,6 +90,11 @@ video {
   color: #314454;
 }
 
+.top-nav a[aria-current="page"] {
+  color: var(--ink);
+  font-weight: 800;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(280px, 0.82fr) minmax(360px, 1.18fr);
@@ -202,6 +207,12 @@ figcaption {
   scroll-margin-top: 92px;
 }
 
+.page-intro {
+  margin-bottom: 64px;
+  padding-bottom: 34px;
+  border-bottom: 1px solid var(--rule);
+}
+
 .section-block > p {
   max-width: 760px;
   color: #263946;
@@ -245,7 +256,15 @@ figcaption {
   margin-top: 28px;
 }
 
+.page-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 30px;
+}
+
 .topic-card,
+.page-link-card,
 .derivation-card,
 .formula-list section,
 .chapter-callout,
@@ -262,6 +281,25 @@ figcaption {
   padding: 18px;
 }
 
+.page-link-card {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 6px 16px;
+  padding: 20px;
+  color: var(--ink);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.page-link-card:hover {
+  border-color: rgba(31, 111, 178, 0.48);
+  box-shadow: 0 12px 28px rgba(31, 42, 52, 0.09);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
 .topic-card span {
   grid-row: span 2;
   color: var(--teal);
@@ -270,7 +308,15 @@ figcaption {
   font-weight: 800;
 }
 
+.page-link-card span {
+  grid-row: span 2;
+  color: var(--teal);
+  font-family: var(--mono);
+  font-weight: 800;
+}
+
 .topic-card h3,
+.page-link-card h3,
 .derivation-card h3,
 .formula-list h3,
 .chapter-callout h3,
@@ -281,6 +327,7 @@ figcaption {
 }
 
 .topic-card p,
+.page-link-card p,
 .derivation-card p,
 .formula-list p,
 .chapter-callout p,
@@ -320,6 +367,44 @@ figcaption {
   margin-top: 26px;
   padding: 22px;
   border-left: 4px solid var(--gold);
+}
+
+.page-footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+
+.page-footer-nav a {
+  display: grid;
+  gap: 5px;
+  min-height: 86px;
+  padding: 18px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.page-footer-nav a:hover {
+  border-color: rgba(31, 111, 178, 0.48);
+  text-decoration: none;
+}
+
+.page-footer-nav .next {
+  text-align: right;
+}
+
+.page-footer-nav span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .math-block mjx-container,
@@ -778,6 +863,7 @@ code {
   }
 
   .curriculum-grid,
+  .page-grid,
   .derivation-grid,
   .formula-list {
     grid-template-columns: 1fr;
@@ -797,5 +883,13 @@ code {
 
   .video-grid {
     grid-template-columns: 1fr;
+  }
+
+  .page-footer-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .page-footer-nav .next {
+    text-align: left;
   }
 }

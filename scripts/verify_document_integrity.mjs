@@ -1,27 +1,42 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { combineHtml, readHtmlPages } from "./html_pages.mjs";
 
 const root = process.cwd();
-const html = readFileSync(path.join(root, "index.html"), "utf8");
+const pages = readHtmlPages(root);
+const html = combineHtml(pages);
 
-const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
-const idCounts = ids.reduce((counts, id) => counts.set(id, (counts.get(id) ?? 0) + 1), new Map());
-const duplicateIds = [...idCounts.entries()].filter(([, count]) => count > 1).map(([id]) => id);
+const checks = pages.map((page) => {
+  const ids = [...page.html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+  const idCounts = ids.reduce((counts, id) => counts.set(id, (counts.get(id) ?? 0) + 1), new Map());
+  const duplicateIds = [...idCounts.entries()].filter(([, count]) => count > 1).map(([id]) => `${page.file}#${id}`);
+  const hashLinks = [...new Set([...page.html.matchAll(/\bhref="#([^"]+)"/g)].map((match) => match[1]))];
+  const brokenHashLinks = hashLinks.filter((id) => !idCounts.has(id)).map((id) => `${page.file}#${id}`);
+  const canvasIssues = [...page.html.matchAll(/<canvas\b[^>]*>/g)]
+    .map((match) => match[0])
+    .filter((tag) => !/\brole="img"/.test(tag) || !/\baria-label="[^"]+"/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag));
+  const videoCardIssues = [...page.html.matchAll(/<figure class="video-card" data-video-card>[\s\S]*?<\/figure>/g)]
+    .map((match) => match[0])
+    .filter((card) => !/<video\b/.test(card) || !/\bdata-src="\.\/public\/media\/manim\/[^"]+\.mp4"/.test(card) || !/<figcaption>[\s\S]*?<code>[^<]+Scene<\/code>[\s\S]*?<\/figcaption>/.test(card));
 
-const hashLinks = [...new Set([...html.matchAll(/\bhref="#([^"]+)"/g)].map((match) => match[1]))];
-const brokenHashLinks = hashLinks.filter((id) => !idCounts.has(id));
+  return {
+    file: page.file,
+    ids,
+    hashLinks,
+    duplicateIds,
+    brokenHashLinks,
+    canvasIssues,
+    videoCardIssues,
+  };
+});
 
-const canvasIssues = [...html.matchAll(/<canvas\b[^>]*>/g)]
-  .map((match) => match[0])
-  .filter((tag) => !/\brole="img"/.test(tag) || !/\baria-label="[^"]+"/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag));
-
-const videoCardIssues = [...html.matchAll(/<figure class="video-card" data-video-card>[\s\S]*?<\/figure>/g)]
-  .map((match) => match[0])
-  .filter((card) => !/<video\b/.test(card) || !/\bdata-src="\.\/public\/media\/manim\/[^"]+\.mp4"/.test(card) || !/<figcaption>[\s\S]*?<code>[^<]+Scene<\/code>[\s\S]*?<\/figcaption>/.test(card));
+const duplicateIds = checks.flatMap((check) => check.duplicateIds);
+const brokenHashLinks = checks.flatMap((check) => check.brokenHashLinks);
+const canvasIssues = checks.flatMap((check) => check.canvasIssues);
+const videoCardIssues = checks.flatMap((check) => check.videoCardIssues);
 
 const result = {
-  checkedIds: ids.length,
-  checkedHashLinks: hashLinks.length,
+  checkedPages: pages.map((page) => page.file),
+  checkedIds: checks.reduce((sum, check) => sum + check.ids.length, 0),
+  checkedHashLinks: checks.reduce((sum, check) => sum + check.hashLinks.length, 0),
   checkedCanvases: (html.match(/<canvas\b/g) ?? []).length,
   checkedVideoCards: (html.match(/data-video-card/g) ?? []).length,
   duplicateIds,

@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quantum Study Resources</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M12 34c10-16 30-16 40 0' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        chtml: {
+          scale: 0.98
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="Quantum Physics introduction home">Quantum Primer</a>
+      <nav class="top-nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./foundations.html">Foundations</a>
+        <a href="./formalism.html">Formalism</a>
+        <a href="./systems.html">Systems</a>
+        <a href="./spin-particles.html">Spin & particles</a>
+        <a href="./methods.html">Methods</a>
+        <a href="./study.html" aria-current="page">Study</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <article class="article-shell">
+        <aside class="toc" aria-label="Page outline">
+          <a href="#chapter-guide">Chapter guide</a>
+          <a href="#study-path">Study path</a>
+          <a href="#problems">Problems</a>
+          <a href="#manim">Manim clips</a>
+        </aside>
+
+        <div class="article-flow">
+          <section class="page-intro section-block">
+            <p class="kicker">Page 6</p>
+            <h2>Turn the pages into derivations and practice.</h2>
+            <p>This page gathers the chapter-level checklist, study path, representative problems, and rendered Manim clips that support repeated passes through the course.</p>
+          </section>
+          <section id="chapter-guide" class="section-block">
+            <p class="kicker">Study 1. Chapter-level study guide</p>
+            <h2>Each topic should end with a derivation you can reproduce.</h2>
+            <p>
+              A deep quantum mechanics course is learned by rebuilding the machinery yourself. The guide below is
+              the current project backlog for turning this article into a full study text: every chapter has a
+              conceptual target, a mathematical derivation target, and a problem ladder.
+            </p>
+
+            <div class="chapter-guide">
+              <details open>
+                <summary>
+                  <span>01</span>
+                  <strong>Wave mechanics and probability</strong>
+                  <em>From \(\Psi\) to measurable distributions</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Build the interpretation of \(|\Psi(x,t)|^2\), normalization, expectation values, and the
+                    continuity equation:
+                    \[
+                      \frac{\partial \rho}{\partial t}+\frac{\partial j}{\partial x}=0
+                    \]
+                    \[
+                      j=\frac{\hbar}{2mi}\left(\Psi^*\frac{\partial\Psi}{\partial x}
+                      -\Psi\frac{\partial\Psi^*}{\partial x}\right).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Derive conservation of total probability from the Schrodinger equation.</li>
+                    <li>Compute \(\langle x\rangle\), \(\langle p\rangle\), \(\Delta x\), and \(\Delta p\) for a Gaussian.</li>
+                    <li>Explain why global phase is unobservable but relative phase is physical.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>02</span>
+                  <strong>Stationary states and one-dimensional wells</strong>
+                  <em>Boundary conditions create spectra</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Separate variables with \(\Psi(x,t)=\psi(x)e^{-iEt/\hbar}\), solve
+                    \(\hat H\psi=E\psi\), and connect allowed energies to normalizable eigenfunctions.
+                  </p>
+                  <ul>
+                    <li>Derive the infinite-well spectrum and prove orthonormality.</li>
+                    <li>Match \(\psi\) and \(d\psi/dx\) across finite potential steps.</li>
+                    <li>Compare bound states, continuum states, and resonance-like behavior.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>03</span>
+                  <strong>Operators, Hilbert space, and uncertainty</strong>
+                  <em>The algebra behind measurement</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Translate wave mechanics into vector spaces. Observables become Hermitian operators, and
+                    incompatible observables satisfy nonzero commutators:
+                    \[
+                      \Delta A\,\Delta B \ge \frac12|\langle[\hat A,\hat B]\rangle|.
+                    \]
+                  </p>
+                  <ul>
+                    <li>Show that Hermitian operators have real eigenvalues.</li>
+                    <li>Derive \([\hat x,\hat p]=i\hbar\) and the Heisenberg uncertainty relation.</li>
+                    <li>Use basis changes to compute probabilities in a non-position basis.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>04</span>
+                  <strong>Harmonic oscillator</strong>
+                  <em>The first algebraic solution</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Factor the Hamiltonian into ladder operators:
+                    \[
+                      \hat a=\sqrt{\frac{m\omega}{2\hbar}}\left(\hat x+\frac{i}{m\omega}\hat p\right),
+                      \qquad
+                      \hat H=\hbar\omega\left(\hat a^\dagger\hat a+\frac12\right).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Prove that energy spacing is uniform and the ground energy is not zero.</li>
+                    <li>Construct \(\psi_0(x)\) from \(\hat a\psi_0=0\).</li>
+                    <li>Connect coherent states to classical oscillation.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>05</span>
+                  <strong>Three dimensions and hydrogen</strong>
+                  <em>Symmetry separates the problem</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    In a central potential, separation in spherical coordinates produces radial functions and
+                    spherical harmonics:
+                    \[
+                      \Psi(r,\theta,\phi)=R_{n\ell}(r)Y_\ell^m(\theta,\phi).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Identify degeneracy from rotational symmetry.</li>
+                    <li>Interpret quantum numbers \(n\), \(\ell\), and \(m\).</li>
+                    <li>Sketch radial probability \(r^2|R_{n\ell}(r)|^2\) for low-lying states.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>06</span>
+                  <strong>Spin, angular momentum, and addition</strong>
+                  <em>Discrete directions from noncommuting generators</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Angular momentum is governed by
+                    \[
+                      [\hat J_i,\hat J_j]=i\hbar\epsilon_{ijk}\hat J_k,
+                      \qquad
+                      \hat J_\pm|j,m\rangle=\hbar\sqrt{j(j+1)-m(m\pm1)}|j,m\pm1\rangle.
+                    \]
+                  </p>
+                  <ul>
+                    <li>Derive allowed \(m\) values using ladder operators.</li>
+                    <li>Represent spin-\(\tfrac12\) states with Pauli matrices.</li>
+                    <li>Use Clebsch-Gordan logic to combine two spins.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>07</span>
+                  <strong>Approximation methods</strong>
+                  <em>How real systems become calculable</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Perturbation theory, the variational principle, and WKB each preserve a different structure:
+                    algebraic corrections, energy bounds, and semiclassical phase.
+                  </p>
+                  <ul>
+                    <li>Compute first-order corrections for a weak anharmonic perturbation.</li>
+                    <li>Diagonalize a two-state perturbation matrix when unperturbed states are degenerate.</li>
+                    <li>Use a variational Gaussian to estimate a ground-state energy.</li>
+                    <li>Apply WKB quantization \(\int_{x_1}^{x_2}p(x)\,dx=(n+\tfrac12)\pi\hbar\).</li>
+                  </ul>
+                </div>
+              </details>
+
+              <details>
+                <summary>
+                  <span>08</span>
+                  <strong>Scattering, identical particles, and transitions</strong>
+                  <em>From bound spectra to experiments</em>
+                </summary>
+                <div class="chapter-body">
+                  <p>
+                    Scattering amplitudes, exchange symmetry, and time-dependent perturbations connect the formal
+                    machinery to cross sections, atomic structure, and transition rates:
+                    \[
+                      \Gamma_{i\to f}=\frac{2\pi}{\hbar}|\langle f|\hat H'|i\rangle|^2\rho(E_f).
+                    \]
+                  </p>
+                  <ul>
+                    <li>Relate \(f(\theta)\) to \(d\sigma/d\Omega\).</li>
+                    <li>Compute \(\sigma_{\mathrm{tot}}\) from partial-wave phase shifts.</li>
+                    <li>Build symmetric and antisymmetric two-particle states.</li>
+                    <li>Use selection rules to decide which transitions are allowed.</li>
+                  </ul>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section id="study-path" class="section-block">
+            <p class="kicker">Study 2. Study path</p>
+            <h2>A deep pass means reading, manipulating, and deriving.</h2>
+            <p>
+              Use the article as a spiral rather than a straight line. Each pass should end with a calculation you can
+              reproduce and a figure whose limiting cases you can predict before touching the slider.
+            </p>
+
+            <div class="curriculum-grid">
+              <section class="topic-card">
+                <span>01</span>
+                <h3>Amplitudes before formalism</h3>
+                <p>Read amplitudes, interference, qubits, and measurement. Derive \(P(k)=|\langle k|\psi\rangle|^2\).</p>
+              </section>
+              <section class="topic-card">
+                <span>02</span>
+                <h3>Postulates as working rules</h3>
+                <p>Practice expectation values, projectors, commutators, and \(\Delta A\,\Delta B\) bounds.</p>
+              </section>
+              <section class="topic-card">
+                <span>03</span>
+                <h3>Exact systems</h3>
+                <p>Move from wells and tunneling to oscillator ladders, hydrogen separation, and spherical harmonics.</p>
+              </section>
+              <section class="topic-card">
+                <span>04</span>
+                <h3>Spin and exchange</h3>
+                <p>Use angular momentum algebra, spin coupling, and \(\hat P_{12}\Psi=\pm\Psi\) to explain exclusion.</p>
+              </section>
+              <section class="topic-card">
+                <span>05</span>
+                <h3>Approximation methods</h3>
+                <p>Compare perturbation theory, degenerate mixing, variational bounds, Stark splitting, and WKB.</p>
+              </section>
+              <section class="topic-card">
+                <span>06</span>
+                <h3>Scattering and transitions</h3>
+                <p>Connect \(d\sigma/d\Omega=|f(\theta)|^2\), Fermi's golden rule, and selection rules to experiments.</p>
+              </section>
+            </div>
+
+            <div class="chapter-callout">
+              <h3>How to use the clips</h3>
+              <p>
+                After each pass, watch the matching Manim scenes below and explain what the animation is preserving:
+                probability, phase, symmetry, energy, angular momentum, or flux.
+              </p>
+            </div>
+          </section>
+
+          <section id="problems" class="section-block">
+            <p class="kicker">Study 3. Practice problems</p>
+            <h2>The fastest check is whether you can derive the next line.</h2>
+            <p>
+              The full problem set lives in <code>PROBLEM_SET.md</code>. These six representative prompts match the
+              study passes above and are designed to be solved with the nearby interactive figures open.
+            </p>
+
+            <div class="derivation-grid">
+              <section class="derivation-card">
+                <h3>Interference term</h3>
+                <p>
+                  For \( |\psi\rangle=(|a\rangle+e^{i\phi}|b\rangle)/\sqrt2 \), derive
+                  \(P(x)=|A_a(x)+e^{i\phi}A_b(x)|^2/2\) and identify the phase-dependent term.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Projection update</h3>
+                <p>
+                  Given \(P_a+P_b=I\), show why outcome \(a\) sends
+                  \( |\psi\rangle \) to \(P_a|\psi\rangle/\sqrt{\langle\psi|P_a|\psi\rangle}\).
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Stationary states</h3>
+                <p>
+                  Solve the infinite square well on \(0\lt x\lt L\), normalize the eigenfunctions, and prove
+                  orthogonality for two different quantum numbers.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Spin and exchange</h3>
+                <p>
+                  Build symmetric and antisymmetric two-particle states from
+                  \(\phi_a(x_1)\phi_b(x_2)\) and \(\phi_b(x_1)\phi_a(x_2)\), then evaluate the case \(a=b\).
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Approximation test</h3>
+                <p>
+                  Starting from \(\hat H=\hat H_0+\lambda\hat H'\), derive
+                  \(E_n^{(1)}=\langle n^{(0)}|\hat H'|n^{(0)}\rangle\) for a nondegenerate level.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Transition rate</h3>
+                <p>
+                  Explain why Fermi's golden rule contains both
+                  \(|\langle f|\hat H'|i\rangle|^2\) and a density of final states \(\rho(E_f)\).
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="manim" class="section-block">
+            <p class="kicker">Study 4. Rendered explanations</p>
+            <h2>Manim scenes turn the same ideas into reusable video clips.</h2>
+            <p>
+              The project includes ManimGL source for forty-one explanatory scenes: a wave packet, momentum-space Fourier transform, translation generator, Robertson uncertainty, probability current and continuity, double-slit
+              interference, qubit measurement, projection measurement, spectral theorem for observables, basis changes and matrix representations, completeness relation, commutators and compatible observables, unitary time evolution, Schrodinger and Heisenberg pictures, Ehrenfest conservation, free-particle dispersion, orthogonality of stationary states, finite square well, parity symmetry, delta-potential bound states and scattering, spectral expansion, harmonic oscillator, hydrogen radial
+              probability, spherical harmonics, spin angular momentum, spin coupling, identical-particle exchange, time-independent perturbation theory,
+              degenerate perturbation theory, the Stark effect, variational approximation, WKB, Born scattering,
+              Coulomb/Rutherford scattering, partial-wave scattering, the optical theorem, time-dependent transitions, electric-dipole selection rules, fine-structure Zeeman
+              splitting, hyperfine coupling, and adiabatic Berry phase.
+              When rendered, the clips appear below and can be embedded in later lessons.
+            </p>
+
+            <div class="video-grid">
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/wave_packet.jpg" data-src="./public/media/manim/wave_packet.mp4"></video>
+                <figcaption>
+                  <span>Wave packet</span>
+                  <code>WavePacketScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/momentum_space.jpg" data-src="./public/media/manim/momentum_space.mp4"></video>
+                <figcaption>
+                  <span>Momentum space</span>
+                  <code>MomentumSpaceScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/translation_generator.jpg" data-src="./public/media/manim/translation_generator.mp4"></video>
+                <figcaption>
+                  <span>Translation generator</span>
+                  <code>TranslationGeneratorScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/probability_current.jpg" data-src="./public/media/manim/probability_current.mp4"></video>
+                <figcaption>
+                  <span>Probability current</span>
+                  <code>ProbabilityCurrentScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/robertson_uncertainty.jpg" data-src="./public/media/manim/robertson_uncertainty.mp4"></video>
+                <figcaption>
+                  <span>Robertson uncertainty</span>
+                  <code>RobertsonUncertaintyScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/double_slit.jpg" data-src="./public/media/manim/double_slit.mp4"></video>
+                <figcaption>
+                  <span>Double slit</span>
+                  <code>DoubleSlitScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/qubit_measurement.jpg" data-src="./public/media/manim/qubit_measurement.mp4"></video>
+                <figcaption>
+                  <span>Qubit measurement</span>
+                  <code>QubitMeasurementScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/projection_measurement.jpg" data-src="./public/media/manim/projection_measurement.mp4"></video>
+                <figcaption>
+                  <span>Projection measurement</span>
+                  <code>ProjectionMeasurementScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spectral_theorem.jpg" data-src="./public/media/manim/spectral_theorem.mp4"></video>
+                <figcaption>
+                  <span>Spectral theorem</span>
+                  <code>SpectralTheoremScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/basis_change.jpg" data-src="./public/media/manim/basis_change.mp4"></video>
+                <figcaption>
+                  <span>Basis changes</span>
+                  <code>BasisChangeScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/completeness_relation.jpg" data-src="./public/media/manim/completeness_relation.mp4"></video>
+                <figcaption>
+                  <span>Completeness relation</span>
+                  <code>CompletenessRelationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/commutator_compatibility.jpg" data-src="./public/media/manim/commutator_compatibility.mp4"></video>
+                <figcaption>
+                  <span>Commutators and compatibility</span>
+                  <code>CommutatorCompatibilityScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/unitary_evolution.jpg" data-src="./public/media/manim/unitary_evolution.mp4"></video>
+                <figcaption>
+                  <span>Unitary time evolution</span>
+                  <code>UnitaryEvolutionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/heisenberg_picture.jpg" data-src="./public/media/manim/heisenberg_picture.mp4"></video>
+                <figcaption>
+                  <span>Schrodinger and Heisenberg pictures</span>
+                  <code>HeisenbergPictureScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/ehrenfest_conservation.jpg" data-src="./public/media/manim/ehrenfest_conservation.mp4"></video>
+                <figcaption>
+                  <span>Ehrenfest conservation</span>
+                  <code>EhrenfestConservationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/free_particle_dispersion.jpg" data-src="./public/media/manim/free_particle_dispersion.mp4"></video>
+                <figcaption>
+                  <span>Free-particle dispersion</span>
+                  <code>FreeParticleDispersionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/orthogonality.jpg" data-src="./public/media/manim/orthogonality.mp4"></video>
+                <figcaption>
+                  <span>Orthogonality</span>
+                  <code>OrthogonalityScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/finite_square_well.jpg" data-src="./public/media/manim/finite_square_well.mp4"></video>
+                <figcaption>
+                  <span>Finite square well</span>
+                  <code>FiniteSquareWellScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/parity_symmetry.jpg" data-src="./public/media/manim/parity_symmetry.mp4"></video>
+                <figcaption>
+                  <span>Parity symmetry</span>
+                  <code>ParitySymmetryScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/delta_potential.jpg" data-src="./public/media/manim/delta_potential.mp4"></video>
+                <figcaption>
+                  <span>Delta potential</span>
+                  <code>DeltaPotentialScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spectral_expansion.jpg" data-src="./public/media/manim/spectral_expansion.mp4"></video>
+                <figcaption>
+                  <span>Spectral expansion</span>
+                  <code>SpectralExpansionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/harmonic_oscillator.jpg" data-src="./public/media/manim/harmonic_oscillator.mp4"></video>
+                <figcaption>
+                  <span>Harmonic oscillator</span>
+                  <code>HarmonicOscillatorScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/hydrogen_radial.jpg" data-src="./public/media/manim/hydrogen_radial.mp4"></video>
+                <figcaption>
+                  <span>Hydrogen radial probability</span>
+                  <code>HydrogenRadialScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spherical_harmonics.jpg" data-src="./public/media/manim/spherical_harmonics.mp4"></video>
+                <figcaption>
+                  <span>Spherical harmonics</span>
+                  <code>SphericalHarmonicsScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spin_angular_momentum.jpg" data-src="./public/media/manim/spin_angular_momentum.mp4"></video>
+                <figcaption>
+                  <span>Spin angular momentum</span>
+                  <code>SpinAngularMomentumScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/spin_coupling.jpg" data-src="./public/media/manim/spin_coupling.mp4"></video>
+                <figcaption>
+                  <span>Spin coupling</span>
+                  <code>SpinCouplingScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/identical_particles.jpg" data-src="./public/media/manim/identical_particles.mp4"></video>
+                <figcaption>
+                  <span>Identical particles</span>
+                  <code>IdenticalParticlesScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/time_independent_perturbation.jpg" data-src="./public/media/manim/time_independent_perturbation.mp4"></video>
+                <figcaption>
+                  <span>Time-independent perturbation</span>
+                  <code>TimeIndependentPerturbationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/degenerate_perturbation.jpg" data-src="./public/media/manim/degenerate_perturbation.mp4"></video>
+                <figcaption>
+                  <span>Degenerate perturbation</span>
+                  <code>DegeneratePerturbationScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/stark_effect.jpg" data-src="./public/media/manim/stark_effect.mp4"></video>
+                <figcaption>
+                  <span>Stark effect</span>
+                  <code>StarkEffectScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/variational_method.jpg" data-src="./public/media/manim/variational_method.mp4"></video>
+                <figcaption>
+                  <span>Variational method</span>
+                  <code>VariationalMethodScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/wkb_action.jpg" data-src="./public/media/manim/wkb_action.mp4"></video>
+                <figcaption>
+                  <span>WKB action</span>
+                  <code>WKBActionScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/scattering_born.jpg" data-src="./public/media/manim/scattering_born.mp4"></video>
+                <figcaption>
+                  <span>Scattering</span>
+                  <code>ScatteringBornScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/rutherford_scattering.jpg" data-src="./public/media/manim/rutherford_scattering.mp4"></video>
+                <figcaption>
+                  <span>Rutherford scattering</span>
+                  <code>RutherfordScatteringScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/partial_wave_scattering.jpg" data-src="./public/media/manim/partial_wave_scattering.mp4"></video>
+                <figcaption>
+                  <span>Partial-wave scattering</span>
+                  <code>PartialWaveScatteringScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/optical_theorem.jpg" data-src="./public/media/manim/optical_theorem.mp4"></video>
+                <figcaption>
+                  <span>Optical theorem</span>
+                  <code>OpticalTheoremScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/rabi_transitions.jpg" data-src="./public/media/manim/rabi_transitions.mp4"></video>
+                <figcaption>
+                  <span>Time-dependent transitions</span>
+                  <code>RabiTransitionsScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/selection_rules.jpg" data-src="./public/media/manim/selection_rules.mp4"></video>
+                <figcaption>
+                  <span>Selection rules</span>
+                  <code>SelectionRulesScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/fine_structure_zeeman.jpg" data-src="./public/media/manim/fine_structure_zeeman.mp4"></video>
+                <figcaption>
+                  <span>Fine structure and Zeeman</span>
+                  <code>FineStructureZeemanScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/hyperfine_coupling.jpg" data-src="./public/media/manim/hyperfine_coupling.mp4"></video>
+                <figcaption>
+                  <span>Hyperfine coupling</span>
+                  <code>HyperfineCouplingScene</code>
+                </figcaption>
+              </figure>
+              <figure class="video-card" data-video-card>
+                <video controls preload="metadata" poster="./public/media/manim/adiabatic_berry.jpg" data-src="./public/media/manim/adiabatic_berry.mp4"></video>
+                <figcaption>
+                  <span>Adiabatic Berry phase</span>
+                  <code>AdiabaticBerryScene</code>
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+          <nav class="page-footer-nav" aria-label="Page navigation">
+            <a class="previous" href="./methods.html"><span>Previous</span>Methods and experiments</a>
+          </nav>
+        </div>
+      </article>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

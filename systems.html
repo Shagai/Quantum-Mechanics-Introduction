@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exact Quantum Systems</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M12 34c10-16 30-16 40 0' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        chtml: {
+          scale: 0.98
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="Quantum Physics introduction home">Quantum Primer</a>
+      <nav class="top-nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./foundations.html">Foundations</a>
+        <a href="./formalism.html">Formalism</a>
+        <a href="./systems.html" aria-current="page">Systems</a>
+        <a href="./spin-particles.html">Spin & particles</a>
+        <a href="./methods.html">Methods</a>
+        <a href="./study.html">Study</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <article class="article-shell">
+        <aside class="toc" aria-label="Page outline">
+          <a href="#systems">One-dimensional systems</a>
+          <a href="#oscillator">Oscillator</a>
+          <a href="#hydrogen">Hydrogen</a>
+        </aside>
+
+        <div class="article-flow">
+          <section class="page-intro section-block">
+            <p class="kicker">Page 3</p>
+            <h2>Exact solutions teach how spectra are built.</h2>
+            <p>This page studies solvable Hamiltonians: stationary states, square wells, tunneling barriers, spectral expansion, oscillator ladder operators, and the hydrogen atom.</p>
+          </section>
+          <section id="systems" class="section-block">
+            <p class="kicker">Systems 1. Solvable systems</p>
+            <h2>Exact solutions teach the grammar of spectra.</h2>
+            <p>
+              The time-independent Schrodinger equation is an eigenvalue problem:
+              <span class="equation">\( \hat H\psi_n = E_n\psi_n \)</span>. Bound states are normalizable
+              eigenfunctions. Their energy spectrum can be discrete, continuous, or mixed depending on the
+              potential and boundary conditions.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 18</span>
+                <h3>Orthogonal eigenfunctions make expansion coefficients measurable</h3>
+                <p>
+                  Hermitian Hamiltonians have orthogonal stationary states. Choose two square-well modes and
+                  watch the signed overlap integral cancel unless the mode numbers match. This is why
+                  \(c_n=\langle\psi_n|\Psi\rangle\) isolates one component of a state.
+                </p>
+              </div>
+              <canvas id="orthogonality-canvas" width="900" height="560" role="img" aria-label="Orthogonality of stationary-state eigenfunctions and overlap integrals"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Bra mode n
+                  <input id="orthogonality-n" type="range" min="1" max="6" value="2" />
+                </label>
+                <label>
+                  Ket mode m
+                  <input id="orthogonality-m" type="range" min="1" max="6" value="4" />
+                </label>
+                <label>
+                  Ket phase
+                  <input id="orthogonality-phase" type="range" min="-180" max="180" value="0" />
+                </label>
+                <output id="orthogonality-readout" for="orthogonality-n orthogonality-m orthogonality-phase">Orthogonality readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \int_0^a \psi_n^*(x)\psi_m(x)\,dx=\delta_{nm},\qquad
+                \Psi(x,t)=\sum_n c_n\psi_n(x)e^{-iE_nt/\hbar}.
+              \]
+              \[
+                c_n=\int_0^a \psi_n^*(x)\Psi(x,0)\,dx,\qquad
+                \sum_n |c_n|^2=1.
+              \]
+              <p>
+                Orthogonality is the algebra behind spectral expansion: projecting onto one eigenfunction removes
+                every other stationary component.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 19</span>
+                <h3>A free wave packet disperses while its center moves classically</h3>
+                <p>
+                  A free particle has no force, so \(\langle x\rangle\) moves at the group velocity
+                  \(v_g=\hbar k_0/m\). But different momentum components carry different phases, so the packet
+                  spreads even without a potential.
+                </p>
+              </div>
+              <canvas id="free-canvas" width="900" height="540" role="img" aria-label="Free-particle Gaussian wave packet dispersion"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Initial width sigma0
+                  <input id="free-width" type="range" min="22" max="115" value="56" />
+                </label>
+                <label>
+                  Mean wave number k0
+                  <input id="free-k" type="range" min="-100" max="100" value="48" />
+                </label>
+                <output id="free-readout" for="free-width free-k">Free-particle dispersion readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \Psi(x,t)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+                \phi(k)e^{i(kx-\omega(k)t)}\,dk,\qquad
+                \omega(k)=\frac{\hbar k^2}{2m}.
+              \]
+              \[
+                \langle x\rangle=x_0+\frac{\hbar k_0}{m}t,\qquad
+                \sigma_x(t)=\sigma_0\sqrt{1+\left(\frac{\hbar t}{2m\sigma_0^2}\right)^2}.
+              \]
+              <p>
+                The center follows the classical free-particle law, while the width grows because the dispersion
+                relation is quadratic. This is the dynamical side of the Fourier uncertainty relation.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 20</span>
+                <h3>Infinite square well eigenstates</h3>
+                <p>
+                  Boundary conditions force nodes at both walls. The integer \(n\) counts half-wavelengths in
+                  the box, so energy grows like \(n^2\).
+                </p>
+              </div>
+              <canvas id="well-canvas" width="900" height="500" role="img" aria-label="Infinite square well eigenstates"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Quantum number n
+                  <input id="well-level" type="range" min="1" max="6" value="2" />
+                </label>
+                <output id="well-readout" for="well-level">n = 2</output>
+              </div>
+            </figure>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 21</span>
+                <h3>Finite square well bound states</h3>
+                <p>
+                  Relax the infinite walls and the wavefunction leaks into the classically forbidden region.
+                  Bound states come in even and odd parity families, and the allowed energies are roots of
+                  transcendental equations rather than simple multiples of \(n^2\).
+                </p>
+              </div>
+              <canvas id="finite-well-canvas" width="900" height="540" role="img" aria-label="Finite square well bound states and tunneling tails"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Well depth z0
+                  <input id="finite-well-depth" type="range" min="180" max="700" value="470" />
+                </label>
+                <label>
+                  Bound-state index
+                  <input id="finite-well-state" type="range" min="1" max="6" value="2" />
+                </label>
+                <output id="finite-well-readout" for="finite-well-depth finite-well-state">Finite well readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                z=\frac{ka}{2},\qquad z_0=\frac{a}{2}\sqrt{\frac{2mV_0}{\hbar^2}},\qquad
+                \kappa a/2=\sqrt{z_0^2-z^2}.
+              \]
+              \[
+                \text{even: } z\tan z=\sqrt{z_0^2-z^2},\qquad
+                \text{odd: } -z\cot z=\sqrt{z_0^2-z^2}.
+              \]
+              <p>
+                Finite walls make the boundary condition softer: \(\psi\) and \(d\psi/dx\) remain continuous,
+                but the tail outside the well is exponential. As \(V_0\) grows, the roots move toward the
+                infinite-well spectrum.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 22</span>
+                <h3>Parity symmetry separates even and odd states</h3>
+                <p>
+                  If \(V(x)=V(-x)\), the Hamiltonian commutes with the parity operator. Energy eigenstates can
+                  be chosen even or odd, and odd operators such as \(x\) only connect states of opposite parity.
+                  Mix the two families and then break the symmetry slightly.
+                </p>
+              </div>
+              <canvas id="parity-canvas" width="900" height="560" role="img" aria-label="Parity symmetry, even and odd wavefunctions, and selection rules"></canvas>
+              <div class="controls three-up">
+                <label>
+                  Odd-state weight
+                  <input id="parity-mix" type="range" min="0" max="100" value="38" />
+                </label>
+                <label>
+                  Relative phase
+                  <input id="parity-phase" type="range" min="-180" max="180" value="0" />
+                </label>
+                <label>
+                  Symmetry breaking
+                  <input id="parity-tilt" type="range" min="-100" max="100" value="0" />
+                </label>
+                <output id="parity-readout" for="parity-mix parity-phase parity-tilt">Parity symmetry readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                (\hat P\psi)(x)=\psi(-x),\qquad \hat P^2=I,\qquad
+                [\hat H,\hat P]=0 \quad \text{if } V(x)=V(-x).
+              \]
+              \[
+                \hat P|e\rangle=+|e\rangle,\qquad \hat P|o\rangle=-|o\rangle,\qquad
+                \langle e|\hat x|e\rangle=\langle o|\hat x|o\rangle=0.
+              \]
+              \[
+                \langle e|\hat x|o\rangle \text{ can be nonzero, so odd perturbations mix opposite parity.}
+              \]
+              <p>
+                Parity is a shortcut for calculation: many integrals vanish before you compute them because the
+                integrand is odd.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 23</span>
+                <h3>Delta-function well: one bound state, exact scattering</h3>
+                <p>
+                  Shrink an attractive well while keeping its area fixed and it becomes
+                  \(V(x)=-\alpha\delta(x)\). The model is singular but exactly solvable: it has one bound
+                  state and a simple reflection/transmission law for incoming waves.
+                </p>
+              </div>
+              <canvas id="delta-canvas" width="900" height="540" role="img" aria-label="Attractive delta potential bound state and scattering"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Delta strength alpha
+                  <input id="delta-strength" type="range" min="15" max="120" value="62" />
+                </label>
+                <label>
+                  Incoming wave number k
+                  <input id="delta-k" type="range" min="20" max="140" value="72" />
+                </label>
+                <output id="delta-readout" for="delta-strength delta-k">Delta potential readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                V(x)=-\alpha\delta(x),\qquad
+                \psi_b(x)=\sqrt{\kappa}\,e^{-\kappa |x|},\qquad
+                E_b=-\frac{\hbar^2\kappa^2}{2m},\quad \kappa=\frac{m\alpha}{\hbar^2}.
+              \]
+              \[
+                \psi'(0^+)-\psi'(0^-)
+                =-\frac{2m\alpha}{\hbar^2}\psi(0),\qquad
+                T=\frac{k^2}{k^2+\kappa^2},\quad R=\frac{\kappa^2}{k^2+\kappa^2}.
+              \]
+              <p>
+                The wavefunction remains continuous, but its slope jumps at the spike. This is the cleanest
+                place to see how boundary conditions can encode a singular interaction.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 24</span>
+                <h3>Spectral expansion and quantum beats</h3>
+                <p>
+                  A general state in the well is a superposition of stationary states. Each energy component
+                  keeps its probability weight \(|c_n|^2\), but its phase rotates at angular frequency
+                  \(E_n/\hbar\). Change the coefficients and watch the probability density breathe as the
+                  relative phases separate.
+                </p>
+              </div>
+              <canvas id="spectral-canvas" width="900" height="540" role="img" aria-label="Spectral expansion and time evolution in an infinite square well"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Coefficient c2
+                  <input id="spectral-c2" type="range" min="-100" max="100" value="68" />
+                </label>
+                <label>
+                  Coefficient c3
+                  <input id="spectral-c3" type="range" min="-100" max="100" value="42" />
+                </label>
+                <output id="spectral-readout" for="spectral-c2 spectral-c3">Spectral expansion readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \Psi(x,t)=\sum_{n=1}^{\infty}c_n\psi_n(x)e^{-iE_nt/\hbar},
+                \qquad
+                c_n=\int_0^a\psi_n^*(x)\Psi(x,0)\,dx.
+              \]
+              \[
+                P(E_n)=|c_n|^2,\qquad
+                \langle H\rangle=\sum_n |c_n|^2E_n.
+              \]
+              <p>
+                An energy eigenstate is stationary because only an overall phase changes. A superposition is
+                different: phase differences \(e^{-i(E_m-E_n)t/\hbar}\) move probability around the well.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 25</span>
+                <h3>Rectangular barrier and tunneling</h3>
+                <p>
+                  When \(E\lt V_0\), the wave inside the barrier is not oscillatory. It decays like
+                  \(e^{-\kappa x}\), but a nonzero tail can still emerge on the other side.
+                </p>
+              </div>
+              <canvas id="barrier-canvas" width="900" height="500" role="img" aria-label="Rectangular barrier tunneling visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Energy fraction E / V0
+                  <input id="barrier-energy" type="range" min="10" max="95" value="55" />
+                </label>
+                <label>
+                  Barrier width
+                  <input id="barrier-width" type="range" min="20" max="120" value="64" />
+                </label>
+                <output id="barrier-readout" for="barrier-energy barrier-width">Tunneling readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Infinite square well</h3>
+                <p>
+                  \[
+                    \psi_n(x)=\sqrt{\frac{2}{a}}\sin\frac{n\pi x}{a},
+                    \qquad
+                    E_n=\frac{n^2\pi^2\hbar^2}{2ma^2}.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Harmonic oscillator</h3>
+                <p>
+                  \[
+                    \hat H=\hbar\omega\left(\hat a^\dagger\hat a+\frac12\right),
+                    \qquad
+                    E_n=\hbar\omega\left(n+\frac12\right).
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Tunneling</h3>
+                <p>
+                  For a barrier with \(E\lt V_0\), the wave decays inside the classically forbidden region:
+                  \[
+                    \psi(x)\sim e^{-\kappa x},
+                    \qquad
+                    \kappa=\sqrt{\frac{2m(V_0-E)}{\hbar^2}}.
+                  \]
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="oscillator" class="section-block">
+            <p class="kicker">Systems 2. Harmonic oscillator</p>
+            <h2>The harmonic oscillator is the algebraic engine of quantum mechanics.</h2>
+            <p>
+              Near a stable equilibrium, many potentials look quadratic:
+              <span class="equation">\(V(x)\approx \frac12m\omega^2x^2\)</span>. The oscillator is therefore
+              more than a toy model; it is the local language of vibrations, fields, photons, and phonons.
+            </p>
+            <p>
+              Its Hamiltonian can be factored into ladder operators. Instead of solving a new differential
+              equation for each level, one climbs the spectrum:
+              <span class="equation">\(\hat a^\dagger|n\rangle=\sqrt{n+1}|n+1\rangle\)</span>.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 26</span>
+                <h3>Hermite modes and energy ladder</h3>
+                <p>
+                  Choose the quantum number \(n\). The curve shows \(\psi_n(\xi)\), the shaded density shows
+                  \(|\psi_n(\xi)|^2\), and the ladder marks the equally spaced energy levels.
+                </p>
+              </div>
+              <canvas id="oscillator-canvas" width="900" height="540" role="img" aria-label="Harmonic oscillator Hermite eigenstate visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Quantum number n
+                  <input id="oscillator-level" type="range" min="0" max="6" value="2" />
+                </label>
+                <output id="oscillator-readout" for="oscillator-level">Oscillator readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Hamiltonian and ladder operators</h3>
+                <p>
+                  \[
+                    \hat H=\frac{\hat p^2}{2m}+\frac12m\omega^2\hat x^2,
+                    \qquad
+                    \hat H=\hbar\omega\left(\hat a^\dagger\hat a+\frac12\right).
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Number states</h3>
+                <p>
+                  \[
+                    \hat N|n\rangle=n|n\rangle,\qquad
+                    E_n=\hbar\omega\left(n+\frac12\right),\qquad n=0,1,2,\ldots
+                  \]
+                  The zero-point energy is forced by the commutator \([\hat a,\hat a^\dagger]=1\).
+                </p>
+              </section>
+              <section>
+                <h3>Position-space wavefunctions</h3>
+                <p>
+                  With \(\xi=\sqrt{m\omega/\hbar}\,x\),
+                  \[
+                    \psi_n(\xi)=\frac{1}{\sqrt{2^n n!}}\left(\frac{m\omega}{\pi\hbar}\right)^{1/4}
+                    H_n(\xi)e^{-\xi^2/2}.
+                  \]
+                </p>
+              </section>
+            </div>
+          </section>
+
+          <section id="hydrogen" class="section-block">
+            <p class="kicker">Systems 3. Three dimensions</p>
+            <h2>Hydrogen turns symmetry into quantum numbers.</h2>
+            <p>
+              For any central potential \(V(r)\), the Schrodinger equation separates into radial and angular
+              parts. In the Coulomb potential, the energy depends only on the principal quantum number \(n\),
+              while \(\ell\) and \(m\) describe angular momentum and orientation.
+            </p>
+            <p>
+              The wavefunction has the form
+              <span class="equation">\(\Psi_{n\ell m}(r,\theta,\phi)=R_{n\ell}(r)Y_\ell^m(\theta,\phi)\)</span>.
+              The radial probability density is \(P(r)=r^2|R_{n\ell}(r)|^2\).
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 27</span>
+                <h3>Hydrogen radial probability</h3>
+                <p>
+                  Choose \(n\) and \(\ell\). The curve shows where the electron is likely to be found in radius;
+                  the sketch marks the angular family: s, p, or d.
+                </p>
+              </div>
+              <canvas id="hydrogen-canvas" width="900" height="520" role="img" aria-label="Hydrogen radial probability visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Principal quantum number n
+                  <input id="hydrogen-n" type="range" min="1" max="3" value="2" />
+                </label>
+                <label>
+                  Angular momentum l
+                  <input id="hydrogen-l" type="range" min="0" max="2" value="1" />
+                </label>
+                <output id="hydrogen-readout" for="hydrogen-n hydrogen-l">Hydrogen readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Central-potential separation</h3>
+                <p>
+                  \[
+                    \Psi(r,\theta,\phi)=R(r)Y_\ell^m(\theta,\phi),
+                    \qquad
+                    \hat L^2Y_\ell^m=\hbar^2\ell(\ell+1)Y_\ell^m.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Hydrogen spectrum</h3>
+                <p>
+                  \[
+                    E_n=-\frac{13.6\ \mathrm{eV}}{n^2},
+                    \qquad
+                    n=1,2,3,\ldots
+                  \]
+                  The degeneracy reflects the Coulomb potential's extra symmetry.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 28</span>
+                <h3>Spherical harmonics and angular nodes</h3>
+                <p>
+                  The angular functions \(Y_\ell^m(\theta,\phi)\) are simultaneous eigenfunctions of
+                  \(\hat L^2\) and \(\hat L_z\). Choose \(\ell\) and \(m\) to see how nodal cones, nodal
+                  meridians, and azimuthal phase winding encode angular momentum.
+                </p>
+              </div>
+              <canvas id="spherical-canvas" width="900" height="560" role="img" aria-label="Spherical harmonics angular nodes and phase winding"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Orbital angular momentum ell
+                  <input id="spherical-l" type="range" min="0" max="4" value="2" />
+                </label>
+                <label>
+                  Magnetic quantum number m
+                  <input id="spherical-m" type="range" min="-2" max="2" value="1" />
+                </label>
+                <output id="spherical-readout" for="spherical-l spherical-m">Spherical harmonic readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat L^2Y_\ell^m=\hbar^2\ell(\ell+1)Y_\ell^m,\qquad
+                \hat L_zY_\ell^m=\hbar mY_\ell^m.
+              \]
+              \[
+                Y_\ell^m(\theta,\phi)=N_{\ell m}P_\ell^{|m|}(\cos\theta)e^{im\phi},\qquad
+                m=-\ell,\ldots,\ell.
+              \]
+              <p>
+                The \(\theta\)-dependence controls polar nodes, while \(e^{im\phi}\) winds the phase around the
+                \(z\)-axis. These are the angular pieces that later control selection rules and partial waves.
+              </p>
+            </div>
+          </section>
+          <nav class="page-footer-nav" aria-label="Page navigation">
+            <a class="previous" href="./formalism.html"><span>Previous</span>Formalism</a>
+            <a class="next" href="./spin-particles.html"><span>Next</span>Continue to spin</a>
+          </nav>
+        </div>
+      </article>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

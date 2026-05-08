@@ -1,11 +1,13 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import path from "node:path";
+import { combineHtml, readHtmlPages } from "./html_pages.mjs";
 
 const root = process.cwd();
-const html = readFileSync(path.join(root, "index.html"), "utf8");
+const pages = readHtmlPages(root);
+const html = combineHtml(pages);
 
-const mediaRefs = [...html.matchAll(/(?:data-src|poster)="\.\/([^"]+)"/g)].map((match) => match[1]);
+const mediaRefs = [...new Set([...html.matchAll(/(?:data-src|poster)="\.\/([^"]+)"/g)].map((match) => match[1]))];
 const missingMedia = mediaRefs.filter((relativePath) => !existsSync(path.join(root, relativePath)));
 const mp4Refs = mediaRefs.filter((relativePath) => relativePath.endsWith(".mp4"));
 const jpgRefs = mediaRefs.filter((relativePath) => relativePath.endsWith(".jpg"));
@@ -34,6 +36,7 @@ try {
 }
 
 const result = {
+  checkedPages: pages.map((page) => page.file),
   checkedRefs: mediaRefs.length,
   mp4Refs: mp4Refs.length,
   jpgRefs: jpgRefs.length,

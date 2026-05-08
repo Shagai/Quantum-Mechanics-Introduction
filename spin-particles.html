@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spin and Identical Particles</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M12 34c10-16 30-16 40 0' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        chtml: {
+          scale: 0.98
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="Quantum Physics introduction home">Quantum Primer</a>
+      <nav class="top-nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./foundations.html">Foundations</a>
+        <a href="./formalism.html">Formalism</a>
+        <a href="./systems.html">Systems</a>
+        <a href="./spin-particles.html" aria-current="page">Spin & particles</a>
+        <a href="./methods.html">Methods</a>
+        <a href="./study.html">Study</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <article class="article-shell">
+        <aside class="toc" aria-label="Page outline">
+          <a href="#spin">Spin</a>
+          <a href="#identical-particles">Identical particles</a>
+        </aside>
+
+        <div class="article-flow">
+          <section class="page-intro section-block">
+            <p class="kicker">Page 4</p>
+            <h2>Angular momentum and exchange symmetry change what states are allowed.</h2>
+            <p>This page moves from orbital angular momentum to intrinsic spin, spin coupling, and the symmetry rule that separates bosons from fermions.</p>
+          </section>
+          <section id="spin" class="section-block">
+            <p class="kicker">Spin 1. Angular momentum and spin</p>
+            <h2>Spin is intrinsic angular momentum with discrete projections.</h2>
+            <p>
+              Orbital angular momentum comes from rotations in space. Spin obeys the same angular-momentum algebra,
+              but it is not a tiny classical rotation of a material object. A spin-\(\tfrac12\) state has only two
+              possible \(S_z\) measurement results:
+              <span class="equation">\(m_s=+\tfrac12\)</span> or <span class="equation">\(m_s=-\tfrac12\)</span>.
+            </p>
+            <p>
+              The commutator algebra fixes the ladder structure. Once \(j\) is known, the allowed projections are
+              \(m=-j,-j+1,\ldots,j\), and the operators \(\hat J_\pm\) move between neighboring rungs.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 29</span>
+                <h3>Stern-Gerlach probabilities and \(m\)-ladders</h3>
+                <p>
+                  Rotate a spin-\(\tfrac12\) preparation relative to the \(z\)-axis, then compare its two
+                  measurement probabilities with the projection ladder for a chosen total angular momentum \(j\).
+                </p>
+              </div>
+              <canvas id="spin-canvas" width="900" height="540" role="img" aria-label="Spin measurement and angular momentum ladder visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Preparation angle beta
+                  <input id="spin-angle" type="range" min="0" max="180" value="64" />
+                </label>
+                <label>
+                  Total angular momentum j
+                  <input id="spin-j" type="range" min="1" max="4" value="3" />
+                </label>
+                <output id="spin-readout" for="spin-angle spin-j">Spin readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Angular momentum algebra</h3>
+                <p>
+                  \[
+                    [\hat J_i,\hat J_j]=i\hbar\epsilon_{ijk}\hat J_k,
+                    \qquad
+                    \hat J^2|j,m\rangle=\hbar^2j(j+1)|j,m\rangle.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Ladder operators</h3>
+                <p>
+                  \[
+                    \hat J_\pm|j,m\rangle
+                    =\hbar\sqrt{j(j+1)-m(m\pm1)}\,|j,m\pm1\rangle.
+                  \]
+                  The ladder stops because the square-root factor becomes zero at \(m=\pm j\).
+                </p>
+              </section>
+              <section>
+                <h3>Spin-\(\tfrac12\) measurement</h3>
+                <p>
+                  \[
+                    |\chi\rangle=\cos\frac{\beta}{2}|+\rangle
+                    +e^{i\alpha}\sin\frac{\beta}{2}|-\rangle,
+                    \qquad
+                    P(+z)=\cos^2\frac{\beta}{2}.
+                  \]
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 30</span>
+                <h3>Adding two spin-\(\tfrac12\) systems</h3>
+                <p>
+                  The product basis \(|+\rangle|-\rangle,|-\rangle|+\rangle\) is not the basis of definite total
+                  spin. Change the relative weight and phase, then watch the same state resolve into symmetric
+                  triplet and antisymmetric singlet sectors.
+                </p>
+              </div>
+              <canvas id="coupling-canvas" width="900" height="540" role="img" aria-label="Clebsch-Gordan spin-coupling visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Product-basis mix gamma
+                  <input id="coupling-mix" type="range" min="0" max="90" value="45" />
+                </label>
+                <label>
+                  Relative phase phi
+                  <input id="coupling-phase" type="range" min="0" max="180" value="0" />
+                </label>
+                <output id="coupling-readout" for="coupling-mix coupling-phase">Spin-coupling readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |1,1\rangle=|+\rangle|+\rangle,\qquad |1,-1\rangle=|-\rangle|-\rangle.
+              \]
+              \[
+                |1,0\rangle=\frac{|+\rangle|-\rangle+|-\rangle|+\rangle}{\sqrt2}.
+              \]
+              \[
+                |0,0\rangle=\frac{|+\rangle|-\rangle-|-\rangle|+\rangle}{\sqrt2}.
+              \]
+              \[
+                |\psi\rangle=\cos\gamma\,|+\rangle|-\rangle
+                +e^{i\phi}\sin\gamma\,|-\rangle|+\rangle.
+              \]
+              \[
+                P_{1,0}=\frac{1+\sin(2\gamma)\cos\phi}{2}.
+              \]
+              \[
+                P_{0,0}=\frac{1-\sin(2\gamma)\cos\phi}{2}.
+              \]
+              <p>
+                Clebsch-Gordan coefficients are amplitudes for changing from uncoupled labels
+                \((m_1,m_2)\) to total labels \((j,m)\).
+              </p>
+            </div>
+          </section>
+
+          <section id="identical-particles" class="section-block">
+            <p class="kicker">Spin 2. Identical particles</p>
+            <h2>Exchange symmetry changes the shape of two-particle probability.</h2>
+            <p>
+              Identical quantum particles are not merely hard to label. The physical state must transform in a
+              definite way when the particle labels are exchanged:
+              <span class="equation">\(\hat P_{12}\Psi=\pm\Psi\)</span>. The plus sign describes bosonic
+              symmetry; the minus sign describes fermionic antisymmetry.
+            </p>
+            <p>
+              For two one-particle orbitals \(\psi_a\) and \(\psi_b\), the allowed two-particle spatial states are
+              symmetric or antisymmetric combinations. This is the mathematical source of bunching, antibunching,
+              and the Pauli exclusion principle.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 31</span>
+                <h3>Exchange symmetry in the \(x_1,x_2\) plane</h3>
+                <p>
+                  Move two wave packets together. Bosonic symmetry enhances the diagonal \(x_1\approx x_2\);
+                  fermionic antisymmetry forces a node on the diagonal.
+                </p>
+              </div>
+              <canvas id="exchange-canvas" width="900" height="540" role="img" aria-label="Identical particle exchange symmetry visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Exchange rule
+                  <select id="exchange-type">
+                    <option value="boson">Bosons: symmetric</option>
+                    <option value="fermion">Fermions: antisymmetric</option>
+                    <option value="distinguishable">Distinguishable product</option>
+                  </select>
+                </label>
+                <label>
+                  Orbital separation
+                  <input id="exchange-separation" type="range" min="18" max="150" value="74" />
+                </label>
+                <output id="exchange-readout" for="exchange-type exchange-separation">Exchange readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Symmetric and antisymmetric states</h3>
+                <p>
+                  \[
+                    \Psi_\pm(x_1,x_2)=\frac{1}{\sqrt{2(1\pm |S|^2)}}
+                    \left[\psi_a(x_1)\psi_b(x_2)\pm\psi_b(x_1)\psi_a(x_2)\right].
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Exchange eigenvalue</h3>
+                <p>
+                  \[
+                    \hat P_{12}\Psi_\pm(x_1,x_2)=\Psi_\pm(x_2,x_1)=\pm\Psi_\pm(x_1,x_2).
+                  \]
+                  Observables depend on \(|\Psi|^2\), but the sign controls interference between exchanged
+                  alternatives.
+                </p>
+              </section>
+              <section>
+                <h3>Pauli exclusion</h3>
+                <p>
+                  If two fermions have the same spin state, their spatial state must be antisymmetric. Then
+                  \[
+                    \Psi_-(x,x)=0,
+                  \]
+                  so two identical fermions cannot occupy the same complete one-particle state.
+                </p>
+              </section>
+            </div>
+          </section>
+          <nav class="page-footer-nav" aria-label="Page navigation">
+            <a class="previous" href="./systems.html"><span>Previous</span>Exact systems</a>
+            <a class="next" href="./methods.html"><span>Next</span>Continue to methods</a>
+          </nav>
+        </div>
+      </article>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -170,7 +170,13 @@ The webpage detects those files automatically. Until they exist, it shows the li
 
 ## Files
 
-- `index.html`: article structure
+- `index.html`: course overview and mathematical spine
+- `foundations.html`: amplitudes, interference, qubits, measurement, and uncertainty
+- `formalism.html`: postulates, operators, basis changes, commutators, and unitary evolution
+- `systems.html`: one-dimensional systems, oscillator, and hydrogen
+- `spin-particles.html`: angular momentum, spin, coupling, and identical particles
+- `methods.html`: approximation methods, scattering, and transitions
+- `study.html`: chapter guide, study path, representative problems, and Manim clips
 - `styles.css`: Distill-inspired typography and layout
 - `src/main.js`: interactive simulations and animation loops
 - `scripts/build_site.mjs`: static GitHub Pages build helper

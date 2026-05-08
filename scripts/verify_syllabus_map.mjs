@@ -1,13 +1,14 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { combineHtml, readHtmlPages } from "./html_pages.mjs";
 
 const root = process.cwd();
 const syllabusPath = path.join(root, "SYLLABUS_MAP.md");
-const htmlPath = path.join(root, "index.html");
 const manimPath = path.join(root, "manim", "quantum_scenes.py");
 
 const syllabus = readFileSync(syllabusPath, "utf8");
-const html = readFileSync(htmlPath, "utf8");
+const pages = readHtmlPages(root);
+const html = combineHtml(pages);
 const manim = readFileSync(manimPath, "utf8");
 
 const sectionIds = [...new Set([...syllabus.matchAll(/`#([a-z0-9-]+)`/g)].map((match) => match[1]))];
@@ -19,6 +20,7 @@ const missingScenes = sceneRefs.filter((scene) => !sceneClasses.has(scene));
 
 const result = {
   syllabus: "SYLLABUS_MAP.md",
+  checkedPages: pages.map((page) => page.file),
   checkedSections: sectionIds.length,
   checkedScenes: sceneRefs.length,
   missingSections,

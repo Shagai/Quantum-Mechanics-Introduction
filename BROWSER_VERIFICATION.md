@@ -5,16 +5,17 @@ Use this after the Codex in-app Browser panel is open and a Browser tab is avail
 ## Page identity
 
 - The URL is `http://localhost:5173`.
-- The document title is `Quantum Physics, From Amplitudes to Measurement`.
+- The document title is `Quantum Physics Course Map`.
 - The hero heading reads `Quantum physics starts when probability gets a phase.`
 
 ## Visual layout
 
-- Desktop viewport: hero canvas is visible, the article uses a wide Distill-like reading column, and the first interactive panels are not blank.
+- Desktop viewport: hero canvas is visible, the overview uses a wide Distill-like reading column, and the course-page cards are visible.
 - Mobile viewport: the hero and controls fit without text overlap or horizontal scrolling.
-- The study path section is reachable from the top nav and article outline and shows the six-pass learning sequence.
-- The problems section is reachable from the top nav and article outline and shows representative derivation prompts.
-- The Manim gallery is reachable near the end of the article and shows poster thumbnails before videos are loaded.
+- `foundations.html#uncertainty` is reachable and the interactive panels are not blank.
+- `study.html#study-path` shows the six-pass learning sequence.
+- `study.html#problems` shows representative derivation prompts.
+- `study.html#manim` shows poster thumbnails before videos are loaded.
 
 ## Runtime checks
 
@@ -27,12 +28,12 @@ Use this after the Codex in-app Browser panel is open and a Browser tab is avail
 
 Once the Browser tab exists, the automated pass should verify:
 
-- `tab.title()` equals `Quantum Physics, From Amplitudes to Measurement`.
+- `tab.title()` equals `Quantum Physics Course Map`.
 - `tab.url()` starts with `http://localhost:5173`.
 - The hero heading is visible.
-- The DOM snapshot includes `A deep pass means reading, manipulating, and deriving.`
-- The DOM snapshot includes `The fastest check is whether you can derive the next line.`
-- The DOM snapshot includes `Manim scenes turn the same ideas into reusable video clips.`
+- The DOM snapshot includes `Start with the mathematical spine.`
+- The DOM snapshot includes `Follow the course in focused chapters.`
+- The DOM snapshot includes `Perturbation theory, variational estimates, WKB, scattering, and transitions.`
 - Browser console errors are empty or unrelated to local project files.
 - `npm run audit:goal` exits successfully.
 - If the local-server card did not update because the page was opened by direct navigation, the Browser automation

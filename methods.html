@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quantum Methods and Experiments</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f172a'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23f59e0b' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23e0f2fe'/%3E%3Cpath d='M12 34c10-16 30-16 40 0' fill='none' stroke='%2338bdf8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [["\\(", "\\)"]],
+          displayMath: [["\\[", "\\]"]]
+        },
+        chtml: {
+          scale: 0.98
+        }
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./index.html" aria-label="Quantum Physics introduction home">Quantum Primer</a>
+      <nav class="top-nav" aria-label="Pages">
+        <a href="./index.html">Overview</a>
+        <a href="./foundations.html">Foundations</a>
+        <a href="./formalism.html">Formalism</a>
+        <a href="./systems.html">Systems</a>
+        <a href="./spin-particles.html">Spin & particles</a>
+        <a href="./methods.html" aria-current="page">Methods</a>
+        <a href="./study.html">Study</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <article class="article-shell">
+        <aside class="toc" aria-label="Page outline">
+          <a href="#methods">Approximation methods</a>
+          <a href="#scattering">Scattering</a>
+          <a href="#transitions">Transitions</a>
+        </aside>
+
+        <div class="article-flow">
+          <section class="page-intro section-block">
+            <p class="kicker">Page 5</p>
+            <h2>Approximation methods connect the formalism to real systems.</h2>
+            <p>This page covers perturbation theory, degenerate mixing, Stark splitting, variational estimates, WKB, scattering amplitudes, cross sections, and time-dependent transitions.</p>
+          </section>
+          <section id="methods" class="section-block">
+            <p class="kicker">Methods 1. Beyond exact solutions</p>
+            <h2>Most real problems are solved by controlled approximation.</h2>
+            <p>
+              Once the formalism is in place, the work becomes strategic: identify a small parameter, a good trial
+              space, a symmetry, or a regime where phases simplify. Approximation methods are not shortcuts around
+              quantum mechanics; they are how the theory becomes useful.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 32</span>
+                <h3>Quartic perturbation of the oscillator ladder</h3>
+                <p>
+                  Start with the exactly solved oscillator and add a weak anharmonic term,
+                  \(\hat H=\hat H_0+\lambda x^4\). First-order perturbation theory shifts each energy level by
+                  the expectation value of the perturbation in the unperturbed state.
+                </p>
+              </div>
+              <canvas id="perturbation-canvas" width="900" height="540" role="img" aria-label="Time-independent perturbation theory energy shift visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Perturbation strength lambda
+                  <input id="perturbation-lambda" type="range" min="0" max="16" value="5" />
+                </label>
+                <label>
+                  Level n
+                  <input id="perturbation-level" type="range" min="0" max="5" value="2" />
+                </label>
+                <output id="perturbation-readout" for="perturbation-lambda perturbation-level">Perturbation readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat H=\hat H_0+\lambda x^4,\qquad
+                E_n^{(0)}=n+\frac12\quad(\hbar=m=\omega=1)
+              \]
+              \[
+                E_n\approx E_n^{(0)}+\lambda\langle n^{(0)}|x^4|n^{(0)}\rangle
+                =n+\frac12+\frac{3\lambda}{4}(2n^2+2n+1).
+              \]
+              \[
+                |n\rangle\approx |n^{(0)}\rangle+
+                \lambda\sum_{m\ne n}\frac{\langle m^{(0)}|x^4|n^{(0)}\rangle}
+                {E_n^{(0)}-E_m^{(0)}}|m^{(0)}\rangle.
+              \]
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 33</span>
+                <h3>Degenerate perturbation and avoided crossing</h3>
+                <p>
+                  When two unperturbed states are degenerate or nearly degenerate, the denominators in ordinary
+                  perturbation theory stop being harmless. The right first step is to diagonalize the perturbation
+                  inside the degenerate subspace.
+                </p>
+              </div>
+              <canvas id="degenerate-canvas" width="900" height="540" role="img" aria-label="Degenerate perturbation theory avoided-crossing visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Bare detuning delta
+                  <input id="degenerate-detuning" type="range" min="-180" max="180" value="40" />
+                </label>
+                <label>
+                  Coupling W_ab
+                  <input id="degenerate-coupling" type="range" min="0" max="140" value="58" />
+                </label>
+                <output id="degenerate-readout" for="degenerate-detuning degenerate-coupling">Degenerate perturbation readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                W_{ij}=\langle i^{(0)}|\hat H'|j^{(0)}\rangle,\qquad i,j\in\mathcal D.
+              \]
+              \[
+                \det(W-wI)=0,\qquad
+                E_\alpha\approx E^{(0)}+\lambda w_\alpha.
+              \]
+              \[
+                H_{\mathrm{eff}}=
+                \begin{pmatrix}
+                  -\Delta/2 & V\\
+                  V & \Delta/2
+                \end{pmatrix},
+                \qquad
+                E_\pm=\pm\sqrt{(\Delta/2)^2+V^2}.
+              \]
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 34</span>
+                <h3>Stark effect: fields mix opposite parity</h3>
+                <p>
+                  An electric field adds \( \hat H'=-\hat{\mathbf d}\cdot\mathbf E\). In a nondegenerate state,
+                  parity often kills the first-order shift. In a degenerate opposite-parity subspace, the same
+                  perturbation must be diagonalized and produces a linear Stark splitting.
+                </p>
+              </div>
+              <canvas id="stark-canvas" width="900" height="560" role="img" aria-label="Linear and quadratic Stark effect visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Electric field strength
+                  <input id="stark-field" type="range" min="-180" max="180" value="85" />
+                </label>
+                <label>
+                  Opposite-parity detuning
+                  <input id="stark-detuning" type="range" min="0" max="180" value="25" />
+                </label>
+                <label>
+                  Dipole matrix element
+                  <input id="stark-dipole" type="range" min="20" max="160" value="85" />
+                </label>
+                <output id="stark-readout" for="stark-field stark-detuning stark-dipole">Stark-effect readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat H'=-qEz,\qquad
+                \langle n\ell m|z|n\ell m\rangle=0
+                \quad \text{for a nondegenerate parity eigenstate.}
+              \]
+              \[
+                H_{\mathrm{eff}}=
+                \begin{pmatrix}
+                  -\Delta/2 & -dE\\
+                  -dE & \Delta/2
+                \end{pmatrix},
+                \qquad
+                E_\pm=\pm\sqrt{(\Delta/2)^2+d^2E^2}.
+              \]
+              \[
+                \Delta=0 \Rightarrow E_\pm=\pm |dE|
+                \quad\text{linear Stark effect},\qquad
+                |dE|\ll\Delta \Rightarrow \Delta E\simeq-\frac{d^2E^2}{\Delta}.
+              \]
+              <p>
+                Degeneracy changes the power of the field: linear splitting signals that the perturbation mixes
+                states before ordinary second-order formulas are valid.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 35</span>
+                <h3>Variational Gaussian for an anharmonic well</h3>
+                <p>
+                  Try a Gaussian wavefunction in \(V(x)=x^2/2+\lambda x^4\). The trial energy
+                  \(E(\alpha)=\langle\phi_\alpha|\hat H|\phi_\alpha\rangle\) is an upper bound; tuning
+                  \(\alpha\) searches for the best bound inside the chosen trial family.
+                </p>
+              </div>
+              <canvas id="variational-canvas" width="900" height="540" role="img" aria-label="Variational Gaussian trial state in an anharmonic potential"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Gaussian width parameter alpha
+                  <input id="variational-alpha" type="range" min="35" max="220" value="100" />
+                </label>
+                <label>
+                  Anharmonic strength lambda
+                  <input id="variational-lambda" type="range" min="0" max="80" value="20" />
+                </label>
+                <output id="variational-readout" for="variational-alpha variational-lambda">Variational readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \phi_\alpha(x)=\left(\frac{\alpha}{\pi}\right)^{1/4}e^{-\alpha x^2/2}
+              \]
+              \[
+                E(\alpha)=\frac{\alpha}{4}+\frac{1}{4\alpha}+\frac{3\lambda}{4\alpha^2},
+                \qquad
+                E_0\le E(\alpha).
+              \]
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 36</span>
+                <h3>WKB action and turning points</h3>
+                <p>
+                  WKB turns a slowly varying potential into a local momentum
+                  \(p(x)=\sqrt{2m(E-V(x))}\). The wave oscillates where \(E>V\), decays where \(E<V\), and
+                  only special energies fit an integer number of half-phases between the turning points.
+                </p>
+              </div>
+              <canvas id="wkb-canvas" width="900" height="540" role="img" aria-label="WKB action integral and turning point visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Energy E
+                  <input id="wkb-energy" type="range" min="80" max="560" value="270" />
+                </label>
+                <label>
+                  Anharmonic shape beta
+                  <input id="wkb-beta" type="range" min="0" max="45" value="12" />
+                </label>
+                <output id="wkb-readout" for="wkb-energy wkb-beta">WKB readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                p(x)=\sqrt{2m(E-V(x))},\qquad
+                \psi_{\text{WKB}}(x)\approx \frac{C}{\sqrt{p(x)}}
+                \sin\left(\frac{1}{\hbar}\int_{x_1}^{x}p(x')\,dx'+\frac{\pi}{4}\right).
+              \]
+              \[
+                \int_{x_1}^{x_2}p(x)\,dx=\left(n+\frac12\right)\pi\hbar.
+              \]
+              \[
+                \psi(x)\propto\frac{1}{\sqrt{\kappa(x)}}
+                \exp\left[-\frac{1}{\hbar}\int_{x_2}^{x}\kappa(x')\,dx'\right],
+                \qquad
+                \kappa(x)=\sqrt{2m(V(x)-E)}.
+              \]
+            </div>
+
+            <div class="derivation-grid">
+              <section class="derivation-card">
+                <h3>Perturbation theory</h3>
+                <p>
+                  If \(\hat H=\hat H_0+\lambda\hat H'\), then the first-order energy correction is
+                  \[
+                    E_n^{(1)}=\langle n^{(0)}|\hat H'|n^{(0)}\rangle.
+                  \]
+                  The method is strongest when nearby unperturbed levels are well separated.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Variational principle</h3>
+                <p>
+                  Any normalized trial state gives an upper bound on the ground energy:
+                  \[
+                    E_0\le \langle\phi|\hat H|\phi\rangle.
+                  \]
+                  Good physics enters through a trial family with meaningful parameters.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>WKB</h3>
+                <p>
+                  In slowly varying potentials,
+                  \[
+                    \psi(x)\approx \frac{C}{\sqrt{p(x)}}\exp\left(\pm\frac{i}{\hbar}\int^x p(x')\,dx'\right).
+                  \]
+                  Turning points require connection formulas.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Scattering</h3>
+                <p>
+                  Far from a localized potential,
+                  \[
+                    \psi(\mathbf r)\sim e^{ikz}+f(\theta)\frac{e^{ikr}}{r}
+                  \]
+                  \[
+                    \frac{d\sigma}{d\Omega}=|f(\theta)|^2.
+                  \]
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Spin and angular momentum</h3>
+                <p>
+                  The algebra
+                  \[
+                    [\hat J_i,\hat J_j]=i\hbar\epsilon_{ijk}\hat J_k
+                  \]
+                  determines ladder operators, magnetic quantum numbers, and selection rules.
+                </p>
+              </section>
+              <section class="derivation-card">
+                <h3>Identical particles</h3>
+                <p>
+                  Exchange symmetry imposes
+                  \[
+                    \Psi(\mathbf r_1,\mathbf r_2)=\pm\Psi(\mathbf r_2,\mathbf r_1).
+                  \]
+                  The minus sign for fermions leads to the Pauli exclusion principle.
+                </p>
+              </section>
+            </div>
+
+            <div class="problem-ladder">
+              <h3>Problem ladder for deep study</h3>
+              <ol>
+                <li>Normalize a Gaussian wave packet and compute \(\langle x\rangle\), \(\langle p\rangle\), \(\Delta x\), and \(\Delta p\).</li>
+                <li>Solve the infinite square well and prove orthogonality of \(\psi_m\) and \(\psi_n\).</li>
+                <li>Use ladder operators to derive the harmonic oscillator spectrum without solving a differential equation.</li>
+                <li>Compute the first-order Stark shift in a simple two-level truncation.</li>
+                <li>Use WKB quantization to estimate bound-state energies in a slowly varying potential.</li>
+                <li>Derive a differential cross section from a given scattering amplitude.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section id="scattering" class="section-block">
+            <p class="kicker">Methods 2. Scattering</p>
+            <h2>Scattering turns a potential into an angular probability map.</h2>
+            <p>
+              In a scattering experiment, a beam comes in with a well-defined momentum and the detector records
+              how much probability is redirected into each solid angle. Far from the target, the wavefunction has
+              an incoming plane-wave part and an outgoing spherical-wave part.
+            </p>
+            <p>
+              The measurable object is the differential cross section:
+              <span class="equation">\(\frac{d\sigma}{d\Omega}=|f(\theta)|^2\)</span>. In the Born approximation,
+              \(f(\theta)\) is controlled by the Fourier transform of the potential at momentum transfer
+              \(q=2k\sin(\theta/2)\).
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 37</span>
+                <h3>Born scattering from a screened potential</h3>
+                <p>
+                  For a Yukawa-like screened potential, the model amplitude scales like
+                  \(f(\theta)\propto(q^2+\mu^2)^{-1}\). Increase \(k\) or reduce the screening scale \(\mu\) to
+                  make forward scattering more sharply peaked.
+                </p>
+              </div>
+              <canvas id="scattering-canvas" width="900" height="540" role="img" aria-label="Scattering differential cross section visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Incident wave number k
+                  <input id="scattering-k" type="range" min="40" max="180" value="100" />
+                </label>
+                <label>
+                  Screening parameter mu
+                  <input id="scattering-mu" type="range" min="20" max="140" value="65" />
+                </label>
+                <output id="scattering-readout" for="scattering-k scattering-mu">Scattering readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Asymptotic form</h3>
+                <p>
+                  \[
+                    \psi(\mathbf r)\sim e^{ikz}+f(\theta)\frac{e^{ikr}}{r},
+                    \qquad
+                    \frac{d\sigma}{d\Omega}=|f(\theta)|^2.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Momentum transfer</h3>
+                <p>
+                  \[
+                    q=|\mathbf k'-\mathbf k|=2k\sin\frac{\theta}{2}.
+                  \]
+                  Small angles mean small momentum transfer; backward scattering probes shorter structure.
+                </p>
+              </section>
+              <section>
+                <h3>Born approximation</h3>
+                <p>
+                  \[
+                    f(\theta)\approx-\frac{2m}{4\pi\hbar^2}
+                    \int e^{-i\mathbf q\cdot\mathbf r}V(\mathbf r)\,d^3r.
+                  \]
+                  The first Born approximation is strongest when the potential is weak enough that one scattering
+                  event dominates.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 38</span>
+                <h3>Coulomb and Rutherford scattering</h3>
+                <p>
+                  A pure \(1/r\) Coulomb potential is long-ranged, so the forward direction is singular and the
+                  Born picture needs care. The exact quantum result has the same angular dependence as Rutherford's
+                  classical formula: a strong \(1/\sin^4(\theta/2)\) forward peak.
+                </p>
+              </div>
+              <canvas id="rutherford-canvas" width="900" height="560" role="img" aria-label="Coulomb Rutherford scattering visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Incident energy E
+                  <input id="rutherford-energy" type="range" min="40" max="220" value="115" />
+                </label>
+                <label>
+                  Coulomb strength kappa
+                  <input id="rutherford-strength" type="range" min="20" max="180" value="85" />
+                </label>
+                <label>
+                  Detector angle theta
+                  <input id="rutherford-angle" type="range" min="8" max="170" value="55" />
+                </label>
+                <output id="rutherford-readout" for="rutherford-energy rutherford-strength rutherford-angle">Rutherford readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                V(r)=\frac{\kappa}{r},\qquad
+                \eta=\frac{m\kappa}{\hbar^2 k}.
+              \]
+              \[
+                f_C(\theta)=-\frac{\eta}{2k\sin^2(\theta/2)}
+                \exp\left[-2i\eta\ln\sin\frac{\theta}{2}+2i\sigma_0\right].
+              \]
+              \[
+                \frac{d\sigma}{d\Omega}
+                =\frac{\eta^2}{4k^2\sin^4(\theta/2)}
+                =\left(\frac{\kappa}{4E}\right)^2\csc^4\frac{\theta}{2}.
+              \]
+              <p>
+                The Coulomb phase changes the amplitude, but the measurable angular distribution matches the
+                classical Rutherford law.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 39</span>
+                <h3>Partial waves and phase shifts</h3>
+                <p>
+                  For a spherically symmetric potential, each angular momentum channel scatters with a phase shift
+                  \(\delta_\ell\). Low-energy scattering is often dominated by the first few channels, so changing
+                  \(s\)-, \(p\)-, and \(d\)-wave phase shifts reshapes the angular pattern directly.
+                </p>
+              </div>
+              <canvas id="partial-waves-canvas" width="900" height="540" role="img" aria-label="Partial-wave scattering phase shift visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  s-wave phase delta_0
+                  <input id="phase-s" type="range" min="0" max="180" value="78" />
+                </label>
+                <label>
+                  p-wave phase delta_1
+                  <input id="phase-p" type="range" min="0" max="180" value="32" />
+                </label>
+                <label>
+                  d-wave phase delta_2
+                  <input id="phase-d" type="range" min="0" max="180" value="14" />
+                </label>
+                <output id="partial-waves-readout" for="phase-s phase-p phase-d">Partial-wave readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                f(\theta)=\frac{1}{k}\sum_{\ell=0}^{\infty}a_\ell(\theta),
+              \]
+              \[
+                a_\ell(\theta)=(2\ell+1)e^{i\delta_\ell}\sin\delta_\ell\,P_\ell(\cos\theta).
+              \]
+              \[
+                \frac{d\sigma}{d\Omega}=|f(\theta)|^2.
+              \]
+              \[
+                \sigma_{\mathrm{tot}}=\frac{4\pi}{k^2}
+                \sum_{\ell=0}^{\infty}(2\ell+1)\sin^2\delta_\ell.
+              \]
+              <p>\(\ell=0\) gives isotropic \(s\)-wave scattering; higher \(\ell\) add angular structure.</p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 40</span>
+                <h3>Optical theorem and unitarity</h3>
+                <p>
+                  The forward scattering amplitude knows about every angle. Adjust phase shifts and loss from the
+                  elastic channel; the total cross section is still fixed by \(\operatorname{Im} f(0)\).
+                </p>
+              </div>
+              <canvas id="optical-canvas" width="900" height="560" role="img" aria-label="Optical theorem and partial-wave unitarity visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  s-wave phase delta_0
+                  <input id="optical-s" type="range" min="0" max="180" value="68" />
+                </label>
+                <label>
+                  p-wave phase delta_1
+                  <input id="optical-p" type="range" min="0" max="180" value="36" />
+                </label>
+                <label>
+                  d-wave phase delta_2
+                  <input id="optical-d" type="range" min="0" max="180" value="10" />
+                </label>
+                <label>
+                  Elasticity eta
+                  <input id="optical-eta" type="range" min="45" max="100" value="92" />
+                </label>
+                <output id="optical-readout" for="optical-s optical-p optical-d optical-eta">Optical theorem readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                f(\theta)=\frac{1}{2ik}\sum_{\ell=0}^{\infty}(2\ell+1)
+                \left(S_\ell-1\right)P_\ell(\cos\theta),
+                \qquad S_\ell=\eta_\ell e^{2i\delta_\ell}.
+              \]
+              \[
+                \sigma_{\mathrm{tot}}=\frac{4\pi}{k}\operatorname{Im} f(0).
+              \]
+              \[
+                \sigma_{\mathrm{el}}=\frac{\pi}{k^2}\sum_\ell(2\ell+1)|1-S_\ell|^2,
+                \qquad
+                \sigma_{\mathrm{abs}}=\frac{\pi}{k^2}\sum_\ell(2\ell+1)(1-\eta_\ell^2).
+              \]
+              <p>
+                With \(\eta_\ell=1\), scattering is purely elastic; \(\eta_\ell<1\) means probability is removed
+                into other channels, but the optical theorem still balances the flux.
+              </p>
+            </div>
+          </section>
+
+          <section id="transitions" class="section-block">
+            <p class="kicker">Methods 3. Time-dependent transitions</p>
+            <h2>A time-dependent perturbation moves probability between levels.</h2>
+            <p>
+              Stationary states do not change their measurement probabilities by themselves. Transitions happen
+              when the Hamiltonian contains a time-dependent perturbation, such as an oscillating electric field
+              coupling two atomic levels.
+            </p>
+            <p>
+              For a driven two-level system, resonance matters. If the drive frequency is close to the level
+              spacing, probability can slosh coherently between \(|g\rangle\) and \(|e\rangle\). With detuning
+              \(\Delta\) and coupling \(\Omega\), the excited-state probability follows the Rabi form.
+            </p>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 41</span>
+                <h3>Rabi oscillations and off-resonant suppression</h3>
+                <p>
+                  Change the coupling and detuning. Stronger coupling moves probability faster; larger detuning
+                  reduces the maximum transition probability even when the drive is left on.
+                </p>
+              </div>
+              <canvas id="transitions-canvas" width="900" height="540" role="img" aria-label="Driven two-level transition and Rabi oscillation visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Detuning Delta
+                  <input id="transition-detuning" type="range" min="-140" max="140" value="35" />
+                </label>
+                <label>
+                  Coupling Omega
+                  <input id="transition-coupling" type="range" min="12" max="160" value="70" />
+                </label>
+                <output id="transition-readout" for="transition-detuning transition-coupling">Transition readout</output>
+              </div>
+            </figure>
+
+            <div class="formula-list">
+              <section>
+                <h3>Driven two-level probability</h3>
+                <p>
+                  \[
+                    P_e(t)=\frac{\Omega^2}{\Omega_R^2}
+                    \sin^2\left(\frac{\Omega_R t}{2}\right),
+                    \qquad
+                    \Omega_R=\sqrt{\Omega^2+\Delta^2}.
+                  \]
+                </p>
+              </section>
+              <section>
+                <h3>Transition amplitude</h3>
+                <p>
+                  First-order time-dependent perturbation theory gives
+                  \[
+                    c_f^{(1)}(t)=-\frac{i}{\hbar}\int_0^t
+                    \langle f|\hat H'(t')|i\rangle e^{i\omega_{fi}t'}\,dt'.
+                  \]
+                  Resonant phases add coherently; off-resonant phases mostly cancel.
+                </p>
+              </section>
+              <section>
+                <h3>Fermi golden rule</h3>
+                <p>
+                  For transitions into many nearby final states,
+                  \[
+                    \Gamma_{i\to f}=\frac{2\pi}{\hbar}
+                    |\langle f|\hat H'|i\rangle|^2\rho(E_f).
+                  \]
+                  The density of final states turns coherent amplitude growth into a transition rate.
+                </p>
+              </section>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 42</span>
+                <h3>Electric-dipole selection rules</h3>
+                <p>
+                  The dipole operator is odd under parity and carries one unit of angular momentum. Choose an
+                  initial \((\ell,m)\) state and a photon polarization \(q\), then test which final angular states
+                  can have a nonzero matrix element.
+                </p>
+              </div>
+              <canvas id="selection-canvas" width="900" height="540" role="img" aria-label="Electric dipole selection rule visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Initial orbital ell
+                  <input id="selection-l" type="range" min="0" max="3" value="1" />
+                </label>
+                <label>
+                  Initial magnetic m
+                  <input id="selection-m" type="range" min="-3" max="3" value="0" />
+                </label>
+                <label>
+                  Photon polarization q
+                  <select id="selection-q">
+                    <option value="0">q = 0, linear z</option>
+                    <option value="1">q = +1, sigma plus</option>
+                    <option value="-1">q = -1, sigma minus</option>
+                  </select>
+                </label>
+                <output id="selection-readout" for="selection-l selection-m selection-q">Selection-rule readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \langle n'\ell'm'|\hat{\mathbf d}\cdot\mathbf e_q|n\ell m\rangle
+                \propto R_{n'\ell',n\ell}\int Y_{\ell'}^{m'*}Y_1^qY_\ell^m\,d\Omega.
+              \]
+              \[
+                \Delta \ell=\pm1,\qquad \Delta m=q,\qquad q=0,\pm1.
+              \]
+              \[
+                \Pi_f\Pi_i=-1
+                \quad \text{because } \hat{\mathbf d}=-e\mathbf r \text{ is odd under parity.}
+              \]
+              <p>
+                A transition can be resonant and still dark if the angular integral vanishes by symmetry.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 43</span>
+                <h3>Fine structure and Zeeman splitting</h3>
+                <p>
+                  Hydrogen's Bohr degeneracy is lifted by relativistic corrections and spin-orbit coupling. Add a
+                  weak magnetic field and each \((n,\ell,j)\) level fans into magnetic sublevels labeled by \(m_j\).
+                </p>
+              </div>
+              <canvas id="fine-structure-canvas" width="900" height="540" role="img" aria-label="Fine structure and Zeeman splitting visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Principal n
+                  <input id="fine-n" type="range" min="2" max="6" value="3" />
+                </label>
+                <label>
+                  Orbital ell
+                  <input id="fine-l" type="range" min="0" max="5" value="1" />
+                </label>
+                <label>
+                  Spin-orbit branch
+                  <select id="fine-j">
+                    <option value="1">j = ell + 1/2</option>
+                    <option value="-1">j = ell - 1/2</option>
+                  </select>
+                </label>
+                <label>
+                  Magnetic sublevel 2m_j
+                  <input id="fine-mj" type="range" min="-11" max="11" value="1" />
+                </label>
+                <label>
+                  Magnetic field B
+                  <input id="fine-b" type="range" min="0" max="160" value="55" />
+                </label>
+                <output id="fine-readout" for="fine-n fine-l fine-j fine-mj fine-b">Fine-structure readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                E_{n,j}\simeq -\frac{13.6\,\mathrm{eV}}{n^2}
+                \left[
+                  1+\frac{\alpha^2}{n^2}
+                  \left(\frac{n}{j+\tfrac12}-\frac34\right)
+                \right].
+              \]
+              \[
+                j=\ell\pm\tfrac12,\qquad
+                m_j=-j,-j+1,\ldots,j.
+              \]
+              \[
+                g_j=1+\frac{j(j+1)+s(s+1)-\ell(\ell+1)}{2j(j+1)},\qquad
+                \Delta E_Z=\mu_B g_j m_j B.
+              \]
+              <p>
+                Fine structure depends on \(j\), while the weak-field Zeeman shift resolves the \(m_j\) degeneracy.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 44</span>
+                <h3>Hyperfine coupling</h3>
+                <p>
+                  The nucleus has angular momentum too. Hyperfine structure couples nuclear spin \(I\) to the
+                  electron's total angular momentum \(J\), producing total \(F=I+J\) multiplets and the famous
+                  hydrogen \(21\text{ cm}\) transition when \(I=J=\tfrac12\).
+                </p>
+              </div>
+              <canvas id="hyperfine-canvas" width="900" height="560" role="img" aria-label="Hyperfine coupling and weak-field splitting visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Nuclear spin 2I
+                  <input id="hyperfine-i" type="range" min="1" max="5" step="1" value="1" />
+                </label>
+                <label>
+                  Electron angular 2J
+                  <input id="hyperfine-j" type="range" min="1" max="5" step="2" value="1" />
+                </label>
+                <label>
+                  Hyperfine constant A/h
+                  <input id="hyperfine-a" type="range" min="80" max="1800" value="1420" />
+                </label>
+                <label>
+                  Selected 2F
+                  <input id="hyperfine-f" type="range" min="0" max="2" step="2" value="2" />
+                </label>
+                <label>
+                  Selected 2m_F
+                  <input id="hyperfine-mf" type="range" min="-2" max="2" step="2" value="0" />
+                </label>
+                <label>
+                  Weak field B
+                  <input id="hyperfine-b" type="range" min="0" max="40" value="8" />
+                </label>
+                <output id="hyperfine-readout" for="hyperfine-i hyperfine-j hyperfine-a hyperfine-f hyperfine-mf hyperfine-b">Hyperfine readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                \hat H_{\mathrm{hf}}=A\,\hat{\mathbf I}\cdot\hat{\mathbf J}
+                =\frac{A}{2}\left(\hat F^2-\hat I^2-\hat J^2\right),
+                \qquad \hat{\mathbf F}=\hat{\mathbf I}+\hat{\mathbf J}.
+              \]
+              \[
+                F=|I-J|, |I-J|+1,\ldots,I+J,
+                \qquad
+                E_F=\frac{A}{2}\left[F(F+1)-I(I+1)-J(J+1)\right].
+              \]
+              \[
+                \Delta E_{F,m_F}\simeq g_F\mu_B m_F B,
+                \qquad m_F=-F,-F+1,\ldots,F.
+              \]
+              <p>
+                Hyperfine spectroscopy is a precision probe: the ground-state hydrogen \(F=1\to F=0\) splitting is
+                the radio line used to map neutral hydrogen in astronomy.
+              </p>
+            </div>
+
+            <figure class="interactive-panel wide">
+              <div class="figure-copy">
+                <span class="figure-label">Interactive figure 45</span>
+                <h3>Adiabatic following and Berry phase</h3>
+                <p>
+                  If the Hamiltonian changes slowly compared with the energy gap, a state that starts in one
+                  instantaneous eigenstate mostly stays there. Move around a closed loop and the state also picks
+                  up a geometric phase set by the loop on the Bloch sphere.
+                </p>
+              </div>
+              <canvas id="adiabatic-canvas" width="900" height="540" role="img" aria-label="Adiabatic theorem and Berry phase visualization"></canvas>
+              <div class="controls two-up">
+                <label>
+                  Sweep speed
+                  <input id="adiabatic-speed" type="range" min="5" max="120" value="34" />
+                </label>
+                <label>
+                  Energy gap
+                  <input id="adiabatic-gap" type="range" min="30" max="180" value="100" />
+                </label>
+                <label>
+                  Loop cone angle
+                  <input id="adiabatic-cone" type="range" min="10" max="80" value="42" />
+                </label>
+                <output id="adiabatic-readout" for="adiabatic-speed adiabatic-gap adiabatic-cone">Adiabatic readout</output>
+              </div>
+            </figure>
+
+            <div class="math-block">
+              \[
+                |\psi(0)\rangle=|n(0)\rangle
+                \quad \Longrightarrow \quad
+                |\psi(t)\rangle\approx e^{i\theta_n(t)}e^{i\gamma_n(t)}|n(t)\rangle.
+              \]
+              \[
+                \left|\frac{\langle m|\dot H|n\rangle}{(E_m-E_n)^2}\right|\ll\frac{1}{\hbar}
+                \quad (m\ne n).
+              \]
+              \[
+                \gamma_n=i\int \langle n(R)|\nabla_R n(R)\rangle\cdot dR.
+              \]
+              \[
+                \gamma_\pm=\mp\frac{\Omega_{\mathrm{solid}}}{2}
+                \quad \text{for spin-\(\tfrac12\) around a closed cone.}
+              \]
+              <p>
+                The dynamical phase depends on elapsed time and energy; the Berry phase depends only on the path in
+                parameter space.
+              </p>
+            </div>
+          </section>
+          <nav class="page-footer-nav" aria-label="Page navigation">
+            <a class="previous" href="./spin-particles.html"><span>Previous</span>Spin and particles</a>
+            <a class="next" href="./study.html"><span>Next</span>Continue to study</a>
+          </nav>
+        </div>
+      </article>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

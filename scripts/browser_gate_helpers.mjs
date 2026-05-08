@@ -1,13 +1,14 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
+import { getHtmlPageNames } from "./html_pages.mjs";
 
-export const expectedTitle = "Quantum Physics, From Amplitudes to Measurement";
+export const expectedTitle = "Quantum Physics Course Map";
 export const expectedHeroHeading = "Quantum physics starts when probability gets a phase.";
 export const requiredBrowserPhrases = [
-  "A deep pass means reading, manipulating, and deriving.",
-  "The fastest check is whether you can derive the next line.",
-  "Manim scenes turn the same ideas into reusable video clips.",
+  "Start with the mathematical spine.",
+  "Follow the course in focused chapters.",
+  "Perturbation theory, variational estimates, WKB, scattering, and transitions.",
 ];
 
 export function normalizeUrl(url) {
@@ -99,16 +100,16 @@ export function validateCodexBrowserProof({ proof, proofPath, root, url }) {
   const h1Ok = proof.h1 === expectedHeroHeading;
   const counts = proof.counts ?? {};
   const countsOk =
-    Number(counts.interactivePanels) >= 45 &&
-    Number(counts.canvases) >= 46 &&
-    Number(counts.videos) >= 41;
+    Number(counts.interactivePanels) === 0 &&
+    Number(counts.canvases) >= 1 &&
+    Number(counts.videos) === 0;
   const checkedPhrases = Array.isArray(proof.checkedPhrases) ? proof.checkedPhrases : [];
   const missingPhrases = requiredBrowserPhrases.filter((phrase) => !checkedPhrases.includes(phrase));
   const consoleErrorCount = Number(proof.consoleErrorCount ?? proof.consoleErrors?.length ?? NaN);
   const consoleOk = Number.isFinite(consoleErrorCount) && consoleErrorCount === 0;
   const generatedAtMs = Date.parse(proof.generatedAt ?? "");
   const latestRuntimeArtifactMtimeMs = Math.max(
-    statSync(path.join(root, "index.html")).mtimeMs,
+    ...getHtmlPageNames(root).map((file) => statSync(path.join(root, file)).mtimeMs),
     statSync(path.join(root, "src", "main.js")).mtimeMs,
     statSync(path.join(root, "manim", "quantum_scenes.py")).mtimeMs,
   );

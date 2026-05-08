@@ -102,12 +102,21 @@ try {
   await page.screenshot({ path: path.join(outDir, "fallback-mobile.png"), fullPage: false });
 
   await page.setViewportSize({ width: 1280, height: 720 });
-  await page.goto(`${normalizedUrl}/#study-path`, { waitUntil: "networkidle", timeout: 20000 });
+  await page.goto(`${normalizedUrl}/foundations.html#uncertainty`, { waitUntil: "networkidle", timeout: 20000 });
+  await page.locator("#uncertainty").evaluate((element) => element.scrollIntoView({ block: "start" }));
+  const foundations = {
+    ...(await pageState("foundations")),
+    hasUncertaintyHeading: await page.locator("#uncertainty").getByText("Uncertainty is a limit on jointly sharp descriptions.").count(),
+    interactivePanels: await page.locator(".interactive-panel").count(),
+  };
+  await page.screenshot({ path: path.join(outDir, "fallback-foundations.png"), fullPage: false });
+
+  await page.goto(`${normalizedUrl}/study.html#study-path`, { waitUntil: "networkidle", timeout: 20000 });
   await page.locator("#study-path").evaluate((element) => element.scrollIntoView({ block: "start" }));
   const studyPath = await pageState("study-path");
   await page.screenshot({ path: path.join(outDir, "fallback-study-path.png"), fullPage: false });
 
-  await page.goto(`${normalizedUrl}/#problems`, { waitUntil: "networkidle", timeout: 20000 });
+  await page.goto(`${normalizedUrl}/study.html#problems`, { waitUntil: "networkidle", timeout: 20000 });
   await page.locator("#problems").evaluate((element) => element.scrollIntoView({ block: "start" }));
   const problems = {
     ...(await pageState("problems")),
@@ -116,7 +125,7 @@ try {
   };
   await page.screenshot({ path: path.join(outDir, "fallback-problems.png"), fullPage: false });
 
-  await page.goto(`${normalizedUrl}/#manim`, { waitUntil: "networkidle", timeout: 20000 });
+  await page.goto(`${normalizedUrl}/study.html#manim`, { waitUntil: "networkidle", timeout: 20000 });
   await page.locator("#manim").evaluate((element) => element.scrollIntoView({ block: "start" }));
   await page
     .waitForFunction(() => [...document.querySelectorAll("video")].some((video) => video.getAttribute("src")), null, {
@@ -138,15 +147,18 @@ try {
   const result = {
     ok:
       errors.length === 0 &&
-      desktop.title === "Quantum Physics, From Amplitudes to Measurement" &&
-      desktop.canvases === 46 &&
-      desktop.videos === 41 &&
-      desktop.interactivePanels === 45 &&
+      desktop.title === "Quantum Physics Course Map" &&
+      desktop.canvases === 1 &&
+      desktop.videos === 0 &&
+      desktop.interactivePanels === 0 &&
       heroStable &&
       !desktop.overflowing &&
       !mobile.overflowing &&
-      studyPath.url.includes("#study-path") &&
-      problems.url.includes("#problems") &&
+      foundations.url.includes("foundations.html#uncertainty") &&
+      foundations.hasUncertaintyHeading === 1 &&
+      foundations.interactivePanels >= 10 &&
+      studyPath.url.includes("study.html#study-path") &&
+      problems.url.includes("study.html#problems") &&
       problems.hasProblemHeading === 1 &&
       problems.derivationCards === 6 &&
       manim.videoCount === 41 &&
@@ -160,6 +172,7 @@ try {
       stable: heroStable,
     },
     mobile,
+    foundations,
     studyPath,
     problems,
     manim,
@@ -171,6 +184,7 @@ try {
     screenshots: [
       "output/playwright/fallback-desktop.png",
       "output/playwright/fallback-mobile.png",
+      "output/playwright/fallback-foundations.png",
       "output/playwright/fallback-study-path.png",
       "output/playwright/fallback-problems.png",
       "output/playwright/fallback-manim.png",
